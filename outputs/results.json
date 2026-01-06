@@ -1,0 +1,16 @@
+{
+  "test_metrics": {
+    "DAT_auc": 0.9814096247023075,
+    "DAT_pr_auc": 0.945011978296739,
+    "NET_auc": 0.9626780626780627,
+    "NET_pr_auc": 0.9328959447326095,
+    "SERT_auc": 0.9794088048656154,
+    "SERT_pr_auc": 0.9865394626640007,
+    "mean_auc": 0.9744988307486618,
+    "mean_pr_auc": 0.9548157952311165,
+    "stereo_sensitivity": 1.0
+  },
+  "criteria_passed": true,
+  "pretrained": true,
+  "timestamp": "2025-12-28T11:44:26.682718"
+}

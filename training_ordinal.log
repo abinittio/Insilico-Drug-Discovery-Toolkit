@@ -1,0 +1,111 @@
+2025-12-25 20:26:33,326 | INFO | Device: cpu
+2025-12-25 20:26:33,341 | INFO | Feature dimensions: node=86, edge=18
+2025-12-25 20:26:33,341 | INFO | Loading training data...
+2025-12-25 20:26:33,492 | INFO | Loaded 1974 records from cache
+2025-12-25 20:26:33,492 | INFO | Creating molecular graphs...
+2025-12-25 20:26:35,877 | INFO | Created 1974 graphs
+2025-12-25 20:26:35,878 | INFO | Split: Train=1579, Val=197, Test=198
+2025-12-25 20:26:35,988 | INFO | Initialized ordinal model from classification backbone
+2025-12-25 20:26:35,990 | INFO | Model parameters: 164,547
+2025-12-25 20:26:35,991 | INFO | 
+======================================================================
+2025-12-25 20:26:35,991 | INFO | TRAINING ORDINAL REGRESSION MODEL
+2025-12-25 20:26:35,991 | INFO | ======================================================================
+2025-12-25 20:26:37,904 | INFO | Epoch 1/50: loss=0.0721, spearman=0.8675, DAT=0.907, NET=0.880, SERT=0.816
+2025-12-25 20:26:37,915 | INFO |   -> New best model saved!
+2025-12-25 20:26:39,556 | INFO | Epoch 2/50: loss=0.0478, spearman=0.8811, DAT=0.913, NET=0.908, SERT=0.823
+2025-12-25 20:26:39,564 | INFO |   -> New best model saved!
+2025-12-25 20:26:41,096 | INFO | Epoch 3/50: loss=0.0354, spearman=0.8988, DAT=0.921, NET=0.919, SERT=0.857
+2025-12-25 20:26:41,104 | INFO |   -> New best model saved!
+2025-12-25 20:26:42,744 | INFO | Epoch 4/50: loss=0.0283, spearman=0.9030, DAT=0.924, NET=0.926, SERT=0.859
+2025-12-25 20:26:42,750 | INFO |   -> New best model saved!
+2025-12-25 20:26:44,421 | INFO | Epoch 5/50: loss=0.0248, spearman=0.9023, DAT=0.924, NET=0.926, SERT=0.856
+2025-12-25 20:26:46,026 | INFO | Epoch 6/50: loss=0.0231, spearman=0.9043, DAT=0.924, NET=0.926, SERT=0.862
+2025-12-25 20:26:46,034 | INFO |   -> New best model saved!
+2025-12-25 20:26:47,762 | INFO | Epoch 7/50: loss=0.0219, spearman=0.9046, DAT=0.923, NET=0.926, SERT=0.864
+2025-12-25 20:26:47,772 | INFO |   -> New best model saved!
+2025-12-25 20:26:49,358 | INFO | Epoch 8/50: loss=0.0211, spearman=0.9057, DAT=0.926, NET=0.923, SERT=0.868
+2025-12-25 20:26:49,364 | INFO |   -> New best model saved!
+2025-12-25 20:26:51,071 | INFO | Epoch 9/50: loss=0.0205, spearman=0.9058, DAT=0.926, NET=0.924, SERT=0.867
+2025-12-25 20:26:51,076 | INFO |   -> New best model saved!
+2025-12-25 20:26:52,866 | INFO | Epoch 10/50: loss=0.0205, spearman=0.9061, DAT=0.926, NET=0.925, SERT=0.867
+2025-12-25 20:26:52,879 | INFO |   -> New best model saved!
+2025-12-25 20:26:55,130 | INFO | Epoch 11/50: loss=0.0205, spearman=0.9055, DAT=0.921, NET=0.922, SERT=0.873
+2025-12-25 20:26:57,296 | INFO | Epoch 12/50: loss=0.0193, spearman=0.9115, DAT=0.923, NET=0.934, SERT=0.878
+2025-12-25 20:26:57,306 | INFO |   -> New best model saved!
+2025-12-25 20:26:59,430 | INFO | Epoch 13/50: loss=0.0182, spearman=0.9081, DAT=0.924, NET=0.926, SERT=0.874
+2025-12-25 20:27:01,675 | INFO | Epoch 14/50: loss=0.0167, spearman=0.9114, DAT=0.921, NET=0.930, SERT=0.884
+2025-12-25 20:27:03,872 | INFO | Epoch 15/50: loss=0.0171, spearman=0.9122, DAT=0.922, NET=0.935, SERT=0.879
+2025-12-25 20:27:03,882 | INFO |   -> New best model saved!
+2025-12-25 20:27:06,025 | INFO | Epoch 16/50: loss=0.0152, spearman=0.9116, DAT=0.922, NET=0.931, SERT=0.882
+2025-12-25 20:27:08,078 | INFO | Epoch 17/50: loss=0.0160, spearman=0.9117, DAT=0.917, NET=0.936, SERT=0.881
+2025-12-25 20:27:10,095 | INFO | Epoch 18/50: loss=0.0143, spearman=0.9052, DAT=0.920, NET=0.924, SERT=0.872
+2025-12-25 20:27:12,083 | INFO | Epoch 19/50: loss=0.0143, spearman=0.9104, DAT=0.920, NET=0.928, SERT=0.883
+2025-12-25 20:27:14,027 | INFO | Epoch 20/50: loss=0.0132, spearman=0.9091, DAT=0.919, NET=0.921, SERT=0.887
+2025-12-25 20:27:15,941 | INFO | Epoch 21/50: loss=0.0131, spearman=0.9126, DAT=0.920, NET=0.932, SERT=0.886
+2025-12-25 20:27:15,949 | INFO |   -> New best model saved!
+2025-12-25 20:27:17,879 | INFO | Epoch 22/50: loss=0.0130, spearman=0.9111, DAT=0.919, NET=0.930, SERT=0.885
+2025-12-25 20:27:19,730 | INFO | Epoch 23/50: loss=0.0124, spearman=0.9116, DAT=0.917, NET=0.932, SERT=0.886
+2025-12-25 20:27:21,648 | INFO | Epoch 24/50: loss=0.0122, spearman=0.9111, DAT=0.917, NET=0.928, SERT=0.888
+2025-12-25 20:27:23,540 | INFO | Epoch 25/50: loss=0.0116, spearman=0.9115, DAT=0.917, NET=0.931, SERT=0.886
+2025-12-25 20:27:25,397 | INFO | Epoch 26/50: loss=0.0121, spearman=0.9103, DAT=0.917, NET=0.931, SERT=0.883
+2025-12-25 20:27:27,355 | INFO | Epoch 27/50: loss=0.0126, spearman=0.9122, DAT=0.917, NET=0.934, SERT=0.886
+2025-12-25 20:27:29,213 | INFO | Epoch 28/50: loss=0.0111, spearman=0.9133, DAT=0.919, NET=0.934, SERT=0.888
+2025-12-25 20:27:29,225 | INFO |   -> New best model saved!
+2025-12-25 20:27:31,123 | INFO | Epoch 29/50: loss=0.0122, spearman=0.9131, DAT=0.919, NET=0.934, SERT=0.887
+2025-12-25 20:27:32,923 | INFO | Epoch 30/50: loss=0.0114, spearman=0.9131, DAT=0.919, NET=0.934, SERT=0.887
+2025-12-25 20:27:34,981 | INFO | Epoch 31/50: loss=0.0121, spearman=0.9139, DAT=0.917, NET=0.934, SERT=0.891
+2025-12-25 20:27:34,989 | INFO |   -> New best model saved!
+2025-12-25 20:27:37,056 | INFO | Epoch 32/50: loss=0.0123, spearman=0.9061, DAT=0.916, NET=0.918, SERT=0.884
+2025-12-25 20:27:38,946 | INFO | Epoch 33/50: loss=0.0125, spearman=0.9059, DAT=0.920, NET=0.909, SERT=0.889
+2025-12-25 20:27:40,916 | INFO | Epoch 34/50: loss=0.0117, spearman=0.9126, DAT=0.917, NET=0.933, SERT=0.888
+2025-12-25 20:27:42,761 | INFO | Epoch 35/50: loss=0.0110, spearman=0.9096, DAT=0.917, NET=0.921, SERT=0.890
+2025-12-25 20:27:44,610 | INFO | Epoch 36/50: loss=0.0113, spearman=0.9119, DAT=0.920, NET=0.933, SERT=0.883
+2025-12-25 20:27:46,610 | INFO | Epoch 37/50: loss=0.0109, spearman=0.9109, DAT=0.920, NET=0.921, SERT=0.892
+2025-12-25 20:27:48,513 | INFO | Epoch 38/50: loss=0.0125, spearman=0.9129, DAT=0.919, NET=0.927, SERT=0.893
+2025-12-25 20:27:50,425 | INFO | Epoch 39/50: loss=0.0107, spearman=0.9112, DAT=0.920, NET=0.933, SERT=0.881
+2025-12-25 20:27:52,349 | INFO | Epoch 40/50: loss=0.0105, spearman=0.9126, DAT=0.920, NET=0.932, SERT=0.886
+2025-12-25 20:27:54,280 | INFO | Epoch 41/50: loss=0.0103, spearman=0.9116, DAT=0.920, NET=0.932, SERT=0.883
+2025-12-25 20:27:56,224 | INFO | Epoch 42/50: loss=0.0100, spearman=0.9151, DAT=0.920, NET=0.933, SERT=0.893
+2025-12-25 20:27:56,234 | INFO |   -> New best model saved!
+2025-12-25 20:27:58,063 | INFO | Epoch 43/50: loss=0.0102, spearman=0.9120, DAT=0.917, NET=0.931, SERT=0.888
+2025-12-25 20:27:59,971 | INFO | Epoch 44/50: loss=0.0101, spearman=0.9092, DAT=0.919, NET=0.931, SERT=0.878
+2025-12-25 20:28:01,872 | INFO | Epoch 45/50: loss=0.0097, spearman=0.9105, DAT=0.920, NET=0.926, SERT=0.886
+2025-12-25 20:28:03,658 | INFO | Epoch 46/50: loss=0.0092, spearman=0.9124, DAT=0.920, NET=0.933, SERT=0.885
+2025-12-25 20:28:05,493 | INFO | Epoch 47/50: loss=0.0088, spearman=0.9078, DAT=0.916, NET=0.929, SERT=0.878
+2025-12-25 20:28:07,356 | INFO | Epoch 48/50: loss=0.0084, spearman=0.9121, DAT=0.920, NET=0.932, SERT=0.885
+2025-12-25 20:28:09,204 | INFO | Epoch 49/50: loss=0.0084, spearman=0.9115, DAT=0.917, NET=0.931, SERT=0.886
+2025-12-25 20:28:11,043 | INFO | Epoch 50/50: loss=0.0088, spearman=0.9132, DAT=0.920, NET=0.933, SERT=0.887
+2025-12-25 20:28:11,055 | INFO | 
+======================================================================
+2025-12-25 20:28:11,055 | INFO | FINAL EVALUATION
+2025-12-25 20:28:11,055 | INFO | ======================================================================
+2025-12-25 20:28:11,155 | INFO | Test Metrics:
+2025-12-25 20:28:11,156 | INFO |   DAT_accuracy: 0.8788
+2025-12-25 20:28:11,156 | INFO |   DAT_auc: 0.9905
+2025-12-25 20:28:11,156 | INFO |   DAT_kendall: 0.7622
+2025-12-25 20:28:11,156 | INFO |   DAT_mae: 0.1127
+2025-12-25 20:28:11,156 | INFO |   DAT_mse: 0.0244
+2025-12-25 20:28:11,157 | INFO |   DAT_spearman: 0.8914
+2025-12-25 20:28:11,157 | INFO |   NET_accuracy: 0.8451
+2025-12-25 20:28:11,157 | INFO |   NET_auc: 0.9924
+2025-12-25 20:28:11,157 | INFO |   NET_kendall: 0.7659
+2025-12-25 20:28:11,157 | INFO |   NET_mae: 0.0973
+2025-12-25 20:28:11,157 | INFO |   NET_mse: 0.0231
+2025-12-25 20:28:11,158 | INFO |   NET_spearman: 0.8966
+2025-12-25 20:28:11,158 | INFO |   SERT_accuracy: 0.8852
+2025-12-25 20:28:11,158 | INFO |   SERT_auc: 0.9903
+2025-12-25 20:28:11,158 | INFO |   SERT_kendall: 0.7583
+2025-12-25 20:28:11,158 | INFO |   SERT_mae: 0.0998
+2025-12-25 20:28:11,158 | INFO |   SERT_mse: 0.0237
+2025-12-25 20:28:11,159 | INFO |   SERT_spearman: 0.8908
+2025-12-25 20:28:11,159 | INFO |   mean_mse: 0.0238
+2025-12-25 20:28:11,159 | INFO |   mean_spearman: 0.8929
+2025-12-25 20:28:11,159 | INFO | 
+Stereo Sensitivity Test:
+2025-12-25 20:28:11,343 | INFO | Stereo sensitivity: 83.33%
+2025-12-25 20:28:11,345 | INFO | 
+Results saved to outputs
+2025-12-25 20:28:11,345 | INFO | ======================================================================
+2025-12-25 20:28:11,345 | INFO | ORDINAL TRAINING COMPLETE
+2025-12-25 20:28:11,345 | INFO | ======================================================================

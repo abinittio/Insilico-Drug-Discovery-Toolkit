@@ -1,0 +1,6 @@
+gradio==5.9.1
+torch
+numpy
+pillow
+rdkit
+torch-geometric

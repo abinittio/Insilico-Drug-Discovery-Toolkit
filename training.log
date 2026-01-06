@@ -1,0 +1,738 @@
+2025-12-25 13:33:12,356 | INFO | TEST RUN MODE: 2 epochs only
+2025-12-25 13:33:12,356 | INFO | Forcing CPU training (--cpu flag)
+2025-12-25 13:33:12,356 | INFO | Device: cpu
+2025-12-25 13:33:12,356 | INFO | CPU cores: 12
+2025-12-25 13:33:12,364 | INFO | TIP: Use --small flag for faster CPU training
+2025-12-25 13:33:12,364 | INFO | 
+======================================================================
+2025-12-25 13:33:12,364 | INFO | LOADING DATA
+2025-12-25 13:33:12,364 | INFO | ======================================================================
+2025-12-25 13:33:12,385 | INFO | Loading data sources...
+2025-12-25 13:33:12,444 | INFO | Total records: 639
+2025-12-25 13:33:12,454 | INFO | Unique compounds: 200
+2025-12-25 13:33:12,456 | INFO | DAT: 81 substrates, 48 blockers, 84 inactive
+2025-12-25 13:33:12,456 | INFO | NET: 94 substrates, 47 blockers, 72 inactive
+2025-12-25 13:33:12,456 | INFO | SERT: 63 substrates, 69 blockers, 81 inactive
+2025-12-25 13:33:12,456 | INFO |   Literature: 200 compounds
+2025-12-25 13:33:12,534 | INFO | Generated 615 SAR-expanded records
+2025-12-25 13:33:12,534 | INFO | Unique compounds: 205
+2025-12-25 13:33:12,534 | INFO |   SAR expanded: 205 compounds
+2025-12-25 13:33:12,544 | INFO | Generated 162 decoy records
+2025-12-25 13:33:12,544 | INFO | Unique decoys: 54
+2025-12-25 13:33:12,544 | INFO |   Decoys: 54 compounds
+2025-12-25 13:33:12,546 | INFO |   Combined: 416 unique compounds
+2025-12-25 13:44:35,819 | INFO | Stereoisomer augmentation: 1416 -> 1926 records
+2025-12-25 13:44:35,957 | INFO |   Unique compounds: 416 -> 549
+2025-12-25 13:44:35,960 | INFO |   After stereo augmentation: 549 compounds
+2025-12-25 13:44:35,991 | INFO | 
+Creating molecular graphs...
+2025-12-25 13:44:46,181 | INFO | Created 1926 graphs
+2025-12-25 13:44:46,189 | INFO | Train: 1540 | Val: 192 | Test: 194
+2025-12-25 13:44:46,189 | INFO | 
+======================================================================
+2025-12-25 13:44:46,189 | INFO | TRAINING
+2025-12-25 13:44:46,189 | INFO | ======================================================================
+2025-12-25 13:44:46,189 | INFO | Using SMALL model for CPU training
+2025-12-25 13:44:46,631 | INFO | Parameters: 290,215
+2025-12-25 13:44:46,641 | INFO | 
+Epoch 1/2
+2025-12-25 13:48:49,619 | INFO | TEST RUN MODE: 2 epochs only
+2025-12-25 13:48:49,619 | INFO | Forcing CPU training (--cpu flag)
+2025-12-25 13:48:49,619 | INFO | Device: cpu
+2025-12-25 13:48:49,619 | INFO | CPU cores: 12
+2025-12-25 13:48:49,619 | INFO | TIP: Use --small flag for faster CPU training
+2025-12-25 13:48:49,619 | INFO | 
+======================================================================
+2025-12-25 13:48:49,619 | INFO | LOADING DATA
+2025-12-25 13:48:49,619 | INFO | ======================================================================
+2025-12-25 13:48:49,656 | INFO | Loading data sources...
+2025-12-25 13:48:49,702 | INFO | Total records: 639
+2025-12-25 13:48:49,719 | INFO | Unique compounds: 200
+2025-12-25 13:48:49,729 | INFO | DAT: 81 substrates, 48 blockers, 84 inactive
+2025-12-25 13:48:49,736 | INFO | NET: 94 substrates, 47 blockers, 72 inactive
+2025-12-25 13:48:49,736 | INFO | SERT: 63 substrates, 69 blockers, 81 inactive
+2025-12-25 13:48:49,736 | INFO |   Literature: 200 compounds
+2025-12-25 13:48:49,802 | INFO | Generated 615 SAR-expanded records
+2025-12-25 13:48:49,802 | INFO | Unique compounds: 205
+2025-12-25 13:48:49,802 | INFO |   SAR expanded: 205 compounds
+2025-12-25 13:48:49,802 | INFO | Generated 162 decoy records
+2025-12-25 13:48:49,802 | INFO | Unique decoys: 54
+2025-12-25 13:48:49,802 | INFO |   Decoys: 54 compounds
+2025-12-25 13:48:49,802 | INFO |   Combined: 416 unique compounds
+2025-12-25 13:59:35,424 | INFO | Stereoisomer augmentation: 1416 -> 1926 records
+2025-12-25 13:59:35,698 | INFO |   Unique compounds: 416 -> 549
+2025-12-25 13:59:35,705 | INFO |   After stereo augmentation: 549 compounds
+2025-12-25 13:59:35,726 | INFO | 
+Creating molecular graphs...
+2025-12-25 13:59:49,061 | INFO | Created 1926 graphs
+2025-12-25 13:59:49,063 | INFO | Train: 1540 | Val: 192 | Test: 194
+2025-12-25 13:59:49,071 | INFO | 
+======================================================================
+2025-12-25 13:59:49,071 | INFO | TRAINING
+2025-12-25 13:59:49,071 | INFO | ======================================================================
+2025-12-25 13:59:49,071 | INFO | Using SMALL model for CPU training
+2025-12-25 13:59:49,450 | INFO | Parameters: 138,441
+2025-12-25 13:59:49,451 | INFO | 
+Epoch 1/2
+2025-12-25 14:15:41,934 | INFO | TEST RUN MODE: 2 epochs only
+2025-12-25 14:15:41,934 | INFO | Forcing CPU training (--cpu flag)
+2025-12-25 14:15:41,934 | INFO | Device: cpu
+2025-12-25 14:15:41,934 | INFO | CPU cores: 12
+2025-12-25 14:15:41,934 | INFO | TIP: Use --small flag for faster CPU training
+2025-12-25 14:15:41,934 | INFO | 
+======================================================================
+2025-12-25 14:15:41,934 | INFO | LOADING DATA
+2025-12-25 14:15:41,934 | INFO | ======================================================================
+2025-12-25 14:15:41,960 | INFO | Loading data sources...
+2025-12-25 14:15:42,024 | INFO | Total records: 639
+2025-12-25 14:15:42,039 | INFO | Unique compounds: 200
+2025-12-25 14:15:42,048 | INFO | DAT: 81 substrates, 48 blockers, 84 inactive
+2025-12-25 14:15:42,048 | INFO | NET: 94 substrates, 47 blockers, 72 inactive
+2025-12-25 14:15:42,048 | INFO | SERT: 63 substrates, 69 blockers, 81 inactive
+2025-12-25 14:15:42,048 | INFO |   Literature: 200 compounds
+2025-12-25 14:15:42,154 | INFO | Generated 615 SAR-expanded records
+2025-12-25 14:15:42,154 | INFO | Unique compounds: 205
+2025-12-25 14:15:42,154 | INFO |   SAR expanded: 205 compounds
+2025-12-25 14:15:42,170 | INFO | Generated 162 decoy records
+2025-12-25 14:15:42,170 | INFO | Unique decoys: 54
+2025-12-25 14:15:42,170 | INFO |   Decoys: 54 compounds
+2025-12-25 14:15:42,170 | INFO |   Combined: 416 unique compounds
+2025-12-25 14:19:09,817 | INFO | Stereoisomer augmentation: 1416 -> 1926 records
+2025-12-25 14:19:09,871 | INFO |   Unique compounds: 416 -> 549
+2025-12-25 14:19:09,871 | INFO |   After stereo augmentation: 549 compounds
+2025-12-25 14:19:09,879 | INFO | 
+Creating molecular graphs...
+2025-12-25 14:19:17,438 | INFO | Created 1926 graphs
+2025-12-25 14:19:17,444 | INFO | Train: 1540 | Val: 192 | Test: 194
+2025-12-25 14:19:17,444 | INFO | 
+======================================================================
+2025-12-25 14:19:17,444 | INFO | TRAINING
+2025-12-25 14:19:17,444 | INFO | ======================================================================
+2025-12-25 14:19:17,452 | INFO | Feature dimensions: node=86, edge=18
+2025-12-25 14:19:17,454 | INFO | Using SMALL model for CPU training
+2025-12-25 14:19:17,702 | INFO | Parameters: 138,057
+2025-12-25 14:19:17,704 | INFO | 
+Epoch 1/2
+2025-12-25 14:19:20,986 | INFO |   Train loss: 0.4824
+2025-12-25 14:19:20,986 | INFO |   Val AUC: 0.6895 | PR-AUC: 0.5470
+2025-12-25 14:19:20,986 | INFO |   DAT: 0.7041 | NET: 0.7035 | SERT: 0.6608
+2025-12-25 14:19:21,091 | INFO |   -> New best model saved!
+2025-12-25 14:19:21,093 | INFO | 
+Epoch 2/2
+2025-12-25 14:19:24,423 | INFO |   Train loss: 0.4734
+2025-12-25 14:19:24,423 | INFO |   Val AUC: 0.7429 | PR-AUC: 0.6199
+2025-12-25 14:19:24,423 | INFO |   DAT: 0.7505 | NET: 0.7569 | SERT: 0.7213
+2025-12-25 14:19:24,446 | INFO |   -> New best model saved!
+2025-12-25 14:19:24,446 | INFO | 
+======================================================================
+2025-12-25 14:19:24,446 | INFO | FINAL EVALUATION
+2025-12-25 14:19:24,446 | INFO | ======================================================================
+2025-12-25 14:26:42,088 | INFO | TEST RUN MODE: 2 epochs only
+2025-12-25 14:26:42,093 | INFO | Forcing CPU training (--cpu flag)
+2025-12-25 14:26:42,093 | INFO | Device: cpu
+2025-12-25 14:26:42,093 | INFO | CPU cores: 12
+2025-12-25 14:26:42,093 | INFO | TIP: Use --small flag for faster CPU training
+2025-12-25 14:26:42,093 | INFO | 
+======================================================================
+2025-12-25 14:26:42,093 | INFO | LOADING DATA
+2025-12-25 14:26:42,093 | INFO | ======================================================================
+2025-12-25 14:26:42,121 | INFO | Loading data sources...
+2025-12-25 14:26:42,180 | INFO | Total records: 639
+2025-12-25 14:26:42,191 | INFO | Unique compounds: 200
+2025-12-25 14:26:42,208 | INFO | DAT: 81 substrates, 48 blockers, 84 inactive
+2025-12-25 14:26:42,212 | INFO | NET: 94 substrates, 47 blockers, 72 inactive
+2025-12-25 14:26:42,214 | INFO | SERT: 63 substrates, 69 blockers, 81 inactive
+2025-12-25 14:26:42,214 | INFO |   Literature: 200 compounds
+2025-12-25 14:26:42,288 | INFO | Generated 615 SAR-expanded records
+2025-12-25 14:26:42,288 | INFO | Unique compounds: 205
+2025-12-25 14:26:42,288 | INFO |   SAR expanded: 205 compounds
+2025-12-25 14:26:42,296 | INFO | Generated 162 decoy records
+2025-12-25 14:26:42,296 | INFO | Unique decoys: 54
+2025-12-25 14:26:42,296 | INFO |   Decoys: 54 compounds
+2025-12-25 14:26:42,305 | INFO |   Combined: 416 unique compounds
+2025-12-25 14:30:16,131 | INFO | Stereoisomer augmentation: 1416 -> 1926 records
+2025-12-25 14:30:16,165 | INFO |   Unique compounds: 416 -> 549
+2025-12-25 14:30:16,174 | INFO |   After stereo augmentation: 549 compounds
+2025-12-25 14:30:16,179 | INFO | 
+Creating molecular graphs...
+2025-12-25 14:30:20,659 | INFO | Created 1926 graphs
+2025-12-25 14:30:20,659 | INFO | Train: 1540 | Val: 192 | Test: 194
+2025-12-25 14:30:20,667 | INFO | 
+======================================================================
+2025-12-25 14:30:20,667 | INFO | TRAINING
+2025-12-25 14:30:20,667 | INFO | ======================================================================
+2025-12-25 14:30:20,667 | INFO | Feature dimensions: node=86, edge=18
+2025-12-25 14:30:20,667 | INFO | Using SMALL model for CPU training
+2025-12-25 14:30:20,879 | INFO | Parameters: 138,057
+2025-12-25 14:30:20,879 | INFO | 
+Epoch 1/2
+2025-12-25 14:30:24,242 | INFO |   Train loss: 0.4810
+2025-12-25 14:30:24,242 | INFO |   Val AUC: 0.6592 | PR-AUC: 0.4587
+2025-12-25 14:30:24,242 | INFO |   DAT: 0.7313 | NET: 0.6682 | SERT: 0.5782
+2025-12-25 14:30:24,292 | INFO |   -> New best model saved!
+2025-12-25 14:30:24,292 | INFO | 
+Epoch 2/2
+2025-12-25 14:30:27,318 | INFO |   Train loss: 0.4736
+2025-12-25 14:30:27,318 | INFO |   Val AUC: 0.7481 | PR-AUC: 0.6024
+2025-12-25 14:30:27,318 | INFO |   DAT: 0.8243 | NET: 0.7229 | SERT: 0.6972
+2025-12-25 14:30:27,334 | INFO |   -> New best model saved!
+2025-12-25 14:30:27,334 | INFO | 
+======================================================================
+2025-12-25 14:30:27,334 | INFO | FINAL EVALUATION
+2025-12-25 14:30:27,334 | INFO | ======================================================================
+2025-12-25 14:30:27,525 | INFO | 
+Test Metrics:
+2025-12-25 14:30:27,525 | INFO |   DAT_auc: 0.6384
+2025-12-25 14:30:27,525 | INFO |   DAT_pr_auc: 0.5988
+2025-12-25 14:30:27,525 | INFO |   NET_auc: 0.7507
+2025-12-25 14:30:27,525 | INFO |   NET_pr_auc: 0.6085
+2025-12-25 14:30:27,527 | INFO |   SERT_auc: 0.7419
+2025-12-25 14:30:27,527 | INFO |   SERT_pr_auc: 0.5567
+2025-12-25 14:30:27,527 | INFO |   mean_auc: 0.7104
+2025-12-25 14:30:27,527 | INFO |   mean_pr_auc: 0.5880
+2025-12-25 14:30:27,527 | INFO | 
+Stereo Sensitivity Test:
+2025-12-25 14:30:27,544 | INFO |   Amphetamine: d=0.330 l=0.324 (expected: d > l)
+2025-12-25 14:30:27,561 | INFO |   Methamphetamine: d=0.332 l=0.326 (expected: d > l)
+2025-12-25 14:30:27,577 | INFO |   Amphetamine-NET: d=0.385 l=0.376 (expected: d > l)
+2025-12-25 14:30:27,588 | INFO |   MDMA: d=0.406 l=0.405 (expected: d > l)
+2025-12-25 14:30:27,598 | INFO |   Cathinone: d=0.328 l=0.325 (expected: d > l)
+2025-12-25 14:30:27,616 | INFO |   Methylphenidate: d=0.309 l=0.304 (expected: d > l)
+2025-12-25 14:30:27,616 | INFO | Stereo sensitivity: 100.00%
+2025-12-25 14:30:27,618 | INFO | 
+======================================================================
+2025-12-25 14:30:27,618 | INFO | SUCCESS CRITERIA
+2025-12-25 14:30:27,618 | INFO | ======================================================================
+2025-12-25 14:30:27,618 | INFO |   [FAIL] Overall ROC-AUC >= 0.85
+2025-12-25 14:30:27,618 | INFO |   [FAIL] Substrate PR-AUC >= 0.65
+2025-12-25 14:30:27,618 | INFO |   [PASS] Stereo sensitivity >= 80%
+2025-12-25 14:30:27,622 | INFO | 
+Results saved to outputs
+2025-12-25 14:30:27,622 | INFO | ======================================================================
+2025-12-25 14:30:27,622 | INFO | TRAINING COMPLETE
+2025-12-25 14:30:27,622 | INFO | ======================================================================
+2025-12-25 14:33:20,953 | INFO | TEST RUN MODE: 2 epochs only
+2025-12-25 14:33:20,953 | INFO | Forcing CPU training (--cpu flag)
+2025-12-25 14:33:20,953 | INFO | Device: cpu
+2025-12-25 14:33:20,953 | INFO | CPU cores: 12
+2025-12-25 14:33:20,953 | INFO | TIP: Use --small flag for faster CPU training
+2025-12-25 14:33:20,953 | INFO | 
+======================================================================
+2025-12-25 14:33:20,953 | INFO | LOADING DATA
+2025-12-25 14:33:20,953 | INFO | ======================================================================
+2025-12-25 14:33:20,969 | INFO | Loading data sources...
+2025-12-25 14:33:21,001 | INFO | Total records: 639
+2025-12-25 14:33:21,001 | INFO | Unique compounds: 200
+2025-12-25 14:33:21,018 | INFO | DAT: 81 substrates, 48 blockers, 84 inactive
+2025-12-25 14:33:21,018 | INFO | NET: 94 substrates, 47 blockers, 72 inactive
+2025-12-25 14:33:21,018 | INFO | SERT: 63 substrates, 69 blockers, 81 inactive
+2025-12-25 14:33:21,018 | INFO |   Literature: 200 compounds
+2025-12-25 14:33:21,048 | INFO | Generated 615 SAR-expanded records
+2025-12-25 14:33:21,048 | INFO | Unique compounds: 205
+2025-12-25 14:33:21,048 | INFO |   SAR expanded: 205 compounds
+2025-12-25 14:33:21,064 | INFO | Generated 162 decoy records
+2025-12-25 14:33:21,064 | INFO | Unique decoys: 54
+2025-12-25 14:33:21,064 | INFO |   Decoys: 54 compounds
+2025-12-25 14:33:21,064 | INFO |   Combined: 416 unique compounds
+2025-12-25 14:35:40,937 | INFO | Stereoisomer augmentation: 1416 -> 1926 records
+2025-12-25 14:35:40,954 | INFO |   Unique compounds: 416 -> 549
+2025-12-25 14:35:40,954 | INFO |   After stereo augmentation: 549 compounds
+2025-12-25 14:35:40,954 | INFO | 
+Creating molecular graphs...
+2025-12-25 14:35:43,421 | INFO | Created 1926 graphs
+2025-12-25 14:35:43,421 | INFO | Train: 1540 | Val: 192 | Test: 194
+2025-12-25 14:35:43,421 | INFO | 
+======================================================================
+2025-12-25 14:35:43,421 | INFO | TRAINING
+2025-12-25 14:35:43,421 | INFO | ======================================================================
+2025-12-25 14:35:43,421 | INFO | Feature dimensions: node=86, edge=18
+2025-12-25 14:35:43,421 | INFO | Using SMALL model for CPU training
+2025-12-25 14:35:43,537 | INFO | Parameters: 138,057
+2025-12-25 14:35:43,537 | INFO | 
+Epoch 1/2
+2025-12-25 14:35:45,559 | INFO |   Train loss: 0.4807
+2025-12-25 14:35:45,559 | INFO |   Val AUC: 0.6967 | PR-AUC: 0.5423
+2025-12-25 14:35:45,559 | INFO |   DAT: 0.7434 | NET: 0.6038 | SERT: 0.7429
+2025-12-25 14:35:45,597 | INFO |   -> New best model saved!
+2025-12-25 14:35:45,597 | INFO | 
+Epoch 2/2
+2025-12-25 14:35:47,320 | INFO |   Train loss: 0.4679
+2025-12-25 14:35:47,320 | INFO |   Val AUC: 0.7202 | PR-AUC: 0.5717
+2025-12-25 14:35:47,320 | INFO |   DAT: 0.7527 | NET: 0.6329 | SERT: 0.7751
+2025-12-25 14:35:47,354 | INFO |   -> New best model saved!
+2025-12-25 14:35:47,354 | INFO | 
+======================================================================
+2025-12-25 14:35:47,354 | INFO | FINAL EVALUATION
+2025-12-25 14:35:47,354 | INFO | ======================================================================
+2025-12-25 14:35:47,453 | INFO | 
+Test Metrics:
+2025-12-25 14:35:47,455 | INFO |   DAT_auc: 0.7702
+2025-12-25 14:35:47,455 | INFO |   DAT_pr_auc: 0.6344
+2025-12-25 14:35:47,455 | INFO |   NET_auc: 0.6208
+2025-12-25 14:35:47,455 | INFO |   NET_pr_auc: 0.6269
+2025-12-25 14:35:47,455 | INFO |   SERT_auc: 0.7671
+2025-12-25 14:35:47,455 | INFO |   SERT_pr_auc: 0.6392
+2025-12-25 14:35:47,455 | INFO |   mean_auc: 0.7194
+2025-12-25 14:35:47,455 | INFO |   mean_pr_auc: 0.6335
+2025-12-25 14:35:47,457 | INFO | 
+Stereo Sensitivity Test:
+2025-12-25 14:35:47,463 | INFO |   Amphetamine: d=0.346 l=0.332 (expected: d > l)
+2025-12-25 14:35:47,484 | INFO |   Methamphetamine: d=0.349 l=0.337 (expected: d > l)
+2025-12-25 14:35:47,501 | INFO |   Amphetamine-NET: d=0.398 l=0.382 (expected: d > l)
+2025-12-25 14:35:47,520 | INFO |   MDMA: d=0.438 l=0.432 (expected: d > l)
+2025-12-25 14:35:47,541 | INFO |   Cathinone: d=0.348 l=0.337 (expected: d > l)
+2025-12-25 14:35:47,558 | INFO |   Methylphenidate: d=0.331 l=0.323 (expected: d > l)
+2025-12-25 14:35:47,558 | INFO | Stereo sensitivity: 100.00%
+2025-12-25 14:35:47,558 | INFO | 
+======================================================================
+2025-12-25 14:35:47,558 | INFO | SUCCESS CRITERIA
+2025-12-25 14:35:47,558 | INFO | ======================================================================
+2025-12-25 14:35:47,558 | INFO |   [FAIL] Overall ROC-AUC >= 0.85
+2025-12-25 14:35:47,558 | INFO |   [FAIL] Substrate PR-AUC >= 0.65
+2025-12-25 14:35:47,558 | INFO |   [PASS] Stereo sensitivity >= 80%
+2025-12-25 14:35:47,564 | INFO | 
+Results saved to outputs
+2025-12-25 14:35:47,564 | INFO | ======================================================================
+2025-12-25 14:35:47,564 | INFO | TRAINING COMPLETE
+2025-12-25 14:35:47,564 | INFO | ======================================================================
+2025-12-25 14:49:43,874 | INFO | Forcing CPU training
+2025-12-25 14:49:43,874 | INFO | Device: cpu
+2025-12-25 14:49:43,874 | INFO | CPU cores: 12
+2025-12-25 14:49:43,888 | INFO | Feature dimensions: node=86, edge=18
+2025-12-25 14:49:43,888 | INFO | 
+======================================================================
+2025-12-25 14:49:43,888 | INFO | PHASE 1: PRETRAINING ON ALL TRANSPORTERS
+2025-12-25 14:49:43,888 | INFO | ======================================================================
+2025-12-25 14:49:43,888 | INFO | Loading pretraining data (all transporters)...
+2025-12-25 14:49:43,888 | INFO | Generating pretraining data...
+2025-12-25 14:49:43,907 | WARNING | ChEMBL client not available - will use cached/synthetic data
+2025-12-25 14:49:43,907 | INFO | ======================================================================
+2025-12-25 14:49:43,907 | INFO | FETCHING ALL TRANSPORTER DATA FOR PRETRAINING
+2025-12-25 14:49:43,907 | INFO | ======================================================================
+2025-12-25 14:49:43,907 | INFO | 
+==================================================
+2025-12-25 14:49:43,907 | INFO | Fetching SLC6 family (9 targets)
+2025-12-25 14:49:43,907 | INFO | ==================================================
+2025-12-25 14:49:43,907 | WARNING | ChEMBL not available, skipping DAT
+2025-12-25 14:49:44,416 | WARNING | ChEMBL not available, skipping NET
+2025-12-25 14:49:44,918 | WARNING | ChEMBL not available, skipping SERT
+2025-12-25 14:49:45,421 | WARNING | ChEMBL not available, skipping GAT1
+2025-12-25 14:49:45,925 | WARNING | ChEMBL not available, skipping GAT2
+2025-12-25 14:49:46,430 | WARNING | ChEMBL not available, skipping GAT3
+2025-12-25 14:49:46,933 | WARNING | ChEMBL not available, skipping BGT1
+2025-12-25 14:49:47,436 | WARNING | ChEMBL not available, skipping GlyT1
+2025-12-25 14:49:47,939 | WARNING | ChEMBL not available, skipping GlyT2
+2025-12-25 14:49:48,447 | INFO | 
+==================================================
+2025-12-25 14:49:48,447 | INFO | Fetching SLC18 family (3 targets)
+2025-12-25 14:49:48,452 | INFO | ==================================================
+2025-12-25 14:49:48,452 | WARNING | ChEMBL not available, skipping VMAT1
+2025-12-25 14:49:48,955 | WARNING | ChEMBL not available, skipping VMAT2
+2025-12-25 14:49:49,457 | WARNING | ChEMBL not available, skipping VAChT
+2025-12-25 14:49:49,960 | INFO | 
+==================================================
+2025-12-25 14:49:49,962 | INFO | Fetching SLC22 family (9 targets)
+2025-12-25 14:49:49,965 | INFO | ==================================================
+2025-12-25 14:49:49,965 | WARNING | ChEMBL not available, skipping OCT1
+2025-12-25 14:49:50,468 | WARNING | ChEMBL not available, skipping OCT2
+2025-12-25 14:49:50,972 | WARNING | ChEMBL not available, skipping OCT3
+2025-12-25 14:49:51,477 | WARNING | ChEMBL not available, skipping OAT1
+2025-12-25 14:49:51,981 | WARNING | ChEMBL not available, skipping OAT3
+2025-12-25 14:49:52,484 | WARNING | ChEMBL not available, skipping OCTN1
+2025-12-25 14:49:52,987 | WARNING | ChEMBL not available, skipping OCTN2
+2025-12-25 14:49:53,491 | WARNING | ChEMBL not available, skipping MATE1
+2025-12-25 14:49:53,996 | WARNING | ChEMBL not available, skipping MATE2K
+2025-12-25 14:49:54,501 | INFO | 
+==================================================
+2025-12-25 14:49:54,503 | INFO | Fetching ABC family (5 targets)
+2025-12-25 14:49:54,503 | INFO | ==================================================
+2025-12-25 14:49:54,503 | WARNING | ChEMBL not available, skipping P-gp
+2025-12-25 14:49:55,009 | WARNING | ChEMBL not available, skipping BCRP
+2025-12-25 14:49:55,514 | WARNING | ChEMBL not available, skipping MRP1
+2025-12-25 14:49:56,015 | WARNING | ChEMBL not available, skipping MRP2
+2025-12-25 14:49:56,518 | WARNING | ChEMBL not available, skipping MRP3
+2025-12-25 14:49:57,023 | INFO | 
+==================================================
+2025-12-25 14:49:57,025 | INFO | Fetching SLC1 family (3 targets)
+2025-12-25 14:49:57,025 | INFO | ==================================================
+2025-12-25 14:49:57,025 | WARNING | ChEMBL not available, skipping EAAT1
+2025-12-25 14:49:57,528 | WARNING | ChEMBL not available, skipping EAAT2
+2025-12-25 14:49:58,032 | WARNING | ChEMBL not available, skipping EAAT3
+2025-12-25 14:49:58,536 | INFO | 
+==================================================
+2025-12-25 14:49:58,536 | INFO | Fetching SLCO family (4 targets)
+2025-12-25 14:49:58,536 | INFO | ==================================================
+2025-12-25 14:49:58,536 | WARNING | ChEMBL not available, skipping OATP1A2
+2025-12-25 14:49:59,041 | WARNING | ChEMBL not available, skipping OATP1B1
+2025-12-25 14:49:59,544 | WARNING | ChEMBL not available, skipping OATP1B3
+2025-12-25 14:50:00,046 | WARNING | ChEMBL not available, skipping OATP2B1
+2025-12-25 14:50:00,549 | WARNING | No data fetched - using fallback data generation
+2025-12-25 14:50:00,549 | INFO | Generating fallback pretraining data...
+2025-12-25 14:50:00,588 | INFO | Total records: 639
+2025-12-25 14:50:00,588 | INFO | Unique compounds: 200
+2025-12-25 14:50:00,603 | INFO | DAT: 81 substrates, 48 blockers, 84 inactive
+2025-12-25 14:50:00,603 | INFO | NET: 94 substrates, 47 blockers, 72 inactive
+2025-12-25 14:50:00,603 | INFO | SERT: 63 substrates, 69 blockers, 81 inactive
+2025-12-25 14:50:00,635 | INFO | Generated 615 SAR-expanded records
+2025-12-25 14:50:00,635 | INFO | Unique compounds: 205
+2025-12-25 14:50:00,654 | INFO | Generated 162 decoy records
+2025-12-25 14:50:00,654 | INFO | Unique decoys: 54
+2025-12-25 14:50:00,825 | INFO | Fallback data: 1509 monoamine records
+2025-12-25 14:50:00,888 | INFO | Available targets: ['DAT', 'NET', 'SERT']
+2025-12-25 14:50:00,888 | INFO | Creating molecular graphs for pretraining...
+2025-12-25 14:50:02,176 | INFO | Created 1509 graphs
+2025-12-25 14:50:02,176 | INFO | Pretrain split: Train=1282, Val=150
+2025-12-25 14:50:02,269 | INFO | Pretrain model parameters: 138,057
+2025-12-25 14:50:03,700 | INFO | Pretrain Epoch 1/30: loss=0.4744, val_auc=0.6980
+2025-12-25 14:50:04,988 | INFO | Pretrain Epoch 2/30: loss=0.4583, val_auc=0.7477
+2025-12-25 14:50:06,070 | INFO | Pretrain Epoch 3/30: loss=0.4342, val_auc=0.7947
+2025-12-25 14:50:07,151 | INFO | Pretrain Epoch 4/30: loss=0.4040, val_auc=0.8236
+2025-12-25 14:50:08,260 | INFO | Pretrain Epoch 5/30: loss=0.3704, val_auc=0.8445
+2025-12-25 14:50:09,332 | INFO | Pretrain Epoch 6/30: loss=0.3265, val_auc=0.8582
+2025-12-25 14:50:10,448 | INFO | Pretrain Epoch 7/30: loss=0.2998, val_auc=0.8761
+2025-12-25 14:50:11,517 | INFO | Pretrain Epoch 8/30: loss=0.2657, val_auc=0.8978
+2025-12-25 14:50:12,566 | INFO | Pretrain Epoch 9/30: loss=0.2567, val_auc=0.9122
+2025-12-25 14:50:13,617 | INFO | Pretrain Epoch 10/30: loss=0.2203, val_auc=0.9132
+2025-12-25 14:50:14,705 | INFO | Pretrain Epoch 11/30: loss=0.2279, val_auc=0.9239
+2025-12-25 14:50:15,785 | INFO | Pretrain Epoch 12/30: loss=0.2028, val_auc=0.9250
+2025-12-25 14:50:16,881 | INFO | Pretrain Epoch 13/30: loss=0.1873, val_auc=0.9349
+2025-12-25 14:50:18,146 | INFO | Pretrain Epoch 14/30: loss=0.1774, val_auc=0.9367
+2025-12-25 14:50:19,233 | INFO | Pretrain Epoch 15/30: loss=0.1666, val_auc=0.9341
+2025-12-25 14:50:20,607 | INFO | Pretrain Epoch 16/30: loss=0.1691, val_auc=0.9413
+2025-12-25 14:50:22,018 | INFO | Pretrain Epoch 17/30: loss=0.1560, val_auc=0.9389
+2025-12-25 14:50:23,365 | INFO | Pretrain Epoch 18/30: loss=0.1490, val_auc=0.9414
+2025-12-25 14:50:24,761 | INFO | Pretrain Epoch 19/30: loss=0.1464, val_auc=0.9477
+2025-12-25 14:50:26,209 | INFO | Pretrain Epoch 20/30: loss=0.1330, val_auc=0.9488
+2025-12-25 14:50:27,533 | INFO | Pretrain Epoch 21/30: loss=0.1453, val_auc=0.9496
+2025-12-25 14:50:28,819 | INFO | Pretrain Epoch 22/30: loss=0.1356, val_auc=0.9527
+2025-12-25 14:50:30,156 | INFO | Pretrain Epoch 23/30: loss=0.1467, val_auc=0.9520
+2025-12-25 14:50:31,417 | INFO | Pretrain Epoch 24/30: loss=0.1451, val_auc=0.9547
+2025-12-25 14:50:32,748 | INFO | Pretrain Epoch 25/30: loss=0.1277, val_auc=0.9573
+2025-12-25 14:50:34,099 | INFO | Pretrain Epoch 26/30: loss=0.1186, val_auc=0.9574
+2025-12-25 14:50:35,416 | INFO | Pretrain Epoch 27/30: loss=0.1209, val_auc=0.9574
+2025-12-25 14:50:36,740 | INFO | Pretrain Epoch 28/30: loss=0.1249, val_auc=0.9567
+2025-12-25 14:50:38,100 | INFO | Pretrain Epoch 29/30: loss=0.1175, val_auc=0.9589
+2025-12-25 14:50:39,398 | INFO | Pretrain Epoch 30/30: loss=0.1114, val_auc=0.9637
+2025-12-25 14:50:39,420 | INFO | Pretraining complete! Best val AUC: 0.9637
+2025-12-25 14:50:39,436 | INFO | Pretraining complete. Exiting (--pretrain-only flag)
+2025-12-25 15:24:46,283 | INFO | Forcing CPU training
+2025-12-25 15:24:46,283 | INFO | Device: cpu
+2025-12-25 15:24:46,283 | INFO | CPU cores: 12
+2025-12-25 15:24:46,301 | INFO | Feature dimensions: node=86, edge=18
+2025-12-25 15:24:46,301 | INFO | Loading pretrained model from outputs\pretrain_model.pt
+2025-12-25 15:26:48,469 | INFO | Forcing CPU training
+2025-12-25 15:26:48,469 | INFO | Device: cpu
+2025-12-25 15:26:48,469 | INFO | CPU cores: 12
+2025-12-25 15:26:48,485 | INFO | Feature dimensions: node=86, edge=18
+2025-12-25 15:26:48,485 | INFO | Loading pretrained model from outputs\pretrain_model.pt
+2025-12-25 15:26:48,500 | INFO | Pretrained targets: ['DAT', 'NET', 'SERT']
+2025-12-25 15:26:48,617 | INFO | Loaded pretrained backbone (val_auc: 0.9637180536512648)
+2025-12-25 15:26:48,617 | INFO | 
+======================================================================
+2025-12-25 15:26:48,617 | INFO | PHASE 2: FINE-TUNING ON MONOAMINE TRANSPORTERS
+2025-12-25 15:26:48,617 | INFO | ======================================================================
+2025-12-25 15:26:48,617 | INFO | Loading fine-tuning data (monoamines only)...
+2025-12-25 15:26:48,682 | INFO | Total records: 639
+2025-12-25 15:26:48,690 | INFO | Unique compounds: 200
+2025-12-25 15:26:48,690 | INFO | DAT: 81 substrates, 48 blockers, 84 inactive
+2025-12-25 15:26:48,690 | INFO | NET: 94 substrates, 47 blockers, 72 inactive
+2025-12-25 15:26:48,690 | INFO | SERT: 63 substrates, 69 blockers, 81 inactive
+2025-12-25 15:26:48,690 | INFO |   Literature: 200 compounds
+2025-12-25 15:26:48,752 | INFO | Generated 615 SAR-expanded records
+2025-12-25 15:26:48,752 | INFO | Unique compounds: 205
+2025-12-25 15:26:48,752 | INFO |   SAR expanded: 205 compounds
+2025-12-25 15:26:48,768 | INFO | Generated 162 decoy records
+2025-12-25 15:26:48,768 | INFO | Unique decoys: 54
+2025-12-25 15:26:48,768 | INFO |   Decoys: 54 compounds
+2025-12-25 15:26:48,768 | INFO |   Combined: 416 unique compounds
+2025-12-25 15:29:59,195 | INFO | Stereoisomer augmentation: 1416 -> 1926 records
+2025-12-25 15:29:59,245 | INFO |   Unique compounds: 416 -> 549
+2025-12-25 15:29:59,249 | INFO |   After stereo augmentation: 549 compounds
+2025-12-25 15:29:59,249 | INFO | Creating molecular graphs for fine-tuning...
+2025-12-25 15:30:02,442 | INFO | Created 1926 graphs
+2025-12-25 15:30:02,457 | INFO | Fine-tune split: Train=1540, Val=192, Test=194
+2025-12-25 15:30:02,457 | INFO | Fine-tune model parameters: 164,841
+2025-12-25 15:30:04,416 | INFO | Epoch 1/50: loss=0.4081, val_auc=0.9138, DAT=0.896, NET=0.929, SERT=0.917
+2025-12-25 15:30:04,434 | INFO |   -> New best model saved!
+2025-12-25 15:30:06,004 | INFO | Epoch 2/50: loss=0.3020, val_auc=0.9482, DAT=0.940, NET=0.945, SERT=0.959
+2025-12-25 15:30:06,024 | INFO |   -> New best model saved!
+2025-12-25 15:30:07,903 | INFO | Epoch 3/50: loss=0.2421, val_auc=0.9645, DAT=0.966, NET=0.959, SERT=0.968
+2025-12-25 15:30:07,915 | INFO |   -> New best model saved!
+2025-12-25 15:30:09,531 | INFO | Epoch 4/50: loss=0.2090, val_auc=0.9753, DAT=0.983, NET=0.967, SERT=0.976
+2025-12-25 15:30:09,548 | INFO |   -> New best model saved!
+2025-12-25 15:30:10,991 | INFO | Epoch 5/50: loss=0.1910, val_auc=0.9804, DAT=0.992, NET=0.972, SERT=0.977
+2025-12-25 15:30:10,995 | INFO |   -> New best model saved!
+2025-12-25 15:30:12,442 | INFO | Epoch 6/50: loss=0.1760, val_auc=0.9786, DAT=0.985, NET=0.973, SERT=0.978
+2025-12-25 15:30:13,811 | INFO | Epoch 7/50: loss=0.1622, val_auc=0.9822, DAT=0.991, NET=0.976, SERT=0.979
+2025-12-25 15:30:13,816 | INFO |   -> New best model saved!
+2025-12-25 15:30:15,243 | INFO | Epoch 8/50: loss=0.1657, val_auc=0.9830, DAT=0.992, NET=0.976, SERT=0.980
+2025-12-25 15:30:15,260 | INFO |   -> New best model saved!
+2025-12-25 15:30:16,606 | INFO | Epoch 9/50: loss=0.1676, val_auc=0.9837, DAT=0.994, NET=0.977, SERT=0.981
+2025-12-25 15:30:16,612 | INFO |   -> New best model saved!
+2025-12-25 15:30:18,072 | INFO | Epoch 10/50: loss=0.1535, val_auc=0.9839, DAT=0.994, NET=0.978, SERT=0.980
+2025-12-25 15:30:18,090 | INFO |   -> New best model saved!
+2025-12-25 15:30:19,690 | INFO | Epoch 11/50: loss=0.1513, val_auc=0.9858, DAT=0.996, NET=0.982, SERT=0.979
+2025-12-25 15:30:19,702 | INFO |   -> New best model saved!
+2025-12-25 15:30:21,753 | INFO | Epoch 12/50: loss=0.1420, val_auc=0.9878, DAT=0.998, NET=0.983, SERT=0.983
+2025-12-25 15:30:21,764 | INFO |   -> New best model saved!
+2025-12-25 15:30:23,622 | INFO | Epoch 13/50: loss=0.1265, val_auc=0.9856, DAT=0.996, NET=0.981, SERT=0.980
+2025-12-25 15:30:25,571 | INFO | Epoch 14/50: loss=0.1449, val_auc=0.9860, DAT=0.994, NET=0.982, SERT=0.981
+2025-12-25 15:30:27,544 | INFO | Epoch 15/50: loss=0.1171, val_auc=0.9869, DAT=0.997, NET=0.983, SERT=0.980
+2025-12-25 15:30:29,457 | INFO | Epoch 16/50: loss=0.1134, val_auc=0.9885, DAT=0.996, NET=0.984, SERT=0.985
+2025-12-25 15:30:29,467 | INFO |   -> New best model saved!
+2025-12-25 15:30:31,341 | INFO | Epoch 17/50: loss=0.1152, val_auc=0.9876, DAT=0.997, NET=0.982, SERT=0.984
+2025-12-25 15:30:33,207 | INFO | Epoch 18/50: loss=0.1107, val_auc=0.9886, DAT=0.996, NET=0.985, SERT=0.986
+2025-12-25 15:30:33,217 | INFO |   -> New best model saved!
+2025-12-25 15:30:35,089 | INFO | Epoch 19/50: loss=0.1107, val_auc=0.9884, DAT=0.998, NET=0.984, SERT=0.984
+2025-12-25 15:30:36,943 | INFO | Epoch 20/50: loss=0.1069, val_auc=0.9889, DAT=0.998, NET=0.985, SERT=0.984
+2025-12-25 15:30:36,954 | INFO |   -> New best model saved!
+2025-12-25 15:30:38,930 | INFO | Epoch 21/50: loss=0.1093, val_auc=0.9877, DAT=0.997, NET=0.983, SERT=0.983
+2025-12-25 15:30:40,820 | INFO | Epoch 22/50: loss=0.1142, val_auc=0.9891, DAT=0.998, NET=0.983, SERT=0.986
+2025-12-25 15:30:40,830 | INFO |   -> New best model saved!
+2025-12-25 15:30:42,764 | INFO | Epoch 23/50: loss=0.0973, val_auc=0.9881, DAT=0.998, NET=0.981, SERT=0.986
+2025-12-25 15:30:44,693 | INFO | Epoch 24/50: loss=0.0988, val_auc=0.9890, DAT=0.996, NET=0.984, SERT=0.987
+2025-12-25 15:30:46,636 | INFO | Epoch 25/50: loss=0.0973, val_auc=0.9880, DAT=0.998, NET=0.980, SERT=0.986
+2025-12-25 15:30:48,580 | INFO | Epoch 26/50: loss=0.0912, val_auc=0.9890, DAT=0.998, NET=0.983, SERT=0.986
+2025-12-25 15:30:50,522 | INFO | Epoch 27/50: loss=0.0920, val_auc=0.9890, DAT=0.998, NET=0.983, SERT=0.986
+2025-12-25 15:30:52,474 | INFO | Epoch 28/50: loss=0.1018, val_auc=0.9891, DAT=0.998, NET=0.983, SERT=0.987
+2025-12-25 15:30:54,393 | INFO | Epoch 29/50: loss=0.0965, val_auc=0.9890, DAT=0.998, NET=0.983, SERT=0.987
+2025-12-25 15:30:56,387 | INFO | Epoch 30/50: loss=0.0893, val_auc=0.9890, DAT=0.998, NET=0.983, SERT=0.987
+2025-12-25 15:30:58,811 | INFO | Epoch 31/50: loss=0.0910, val_auc=0.9856, DAT=0.996, NET=0.978, SERT=0.983
+2025-12-25 15:31:00,939 | INFO | Epoch 32/50: loss=0.0964, val_auc=0.9889, DAT=0.995, NET=0.986, SERT=0.985
+2025-12-25 15:31:02,800 | INFO | Epoch 33/50: loss=0.0897, val_auc=0.9904, DAT=0.998, NET=0.986, SERT=0.988
+2025-12-25 15:31:02,810 | INFO |   -> New best model saved!
+2025-12-25 15:31:04,657 | INFO | Epoch 34/50: loss=0.0918, val_auc=0.9916, DAT=0.997, NET=0.988, SERT=0.990
+2025-12-25 15:31:04,669 | INFO |   -> New best model saved!
+2025-12-25 15:31:06,518 | INFO | Epoch 35/50: loss=0.0848, val_auc=0.9879, DAT=0.997, NET=0.979, SERT=0.988
+2025-12-25 15:31:08,343 | INFO | Epoch 36/50: loss=0.0891, val_auc=0.9910, DAT=0.997, NET=0.987, SERT=0.989
+2025-12-25 15:31:10,233 | INFO | Epoch 37/50: loss=0.0866, val_auc=0.9897, DAT=0.997, NET=0.986, SERT=0.986
+2025-12-25 15:31:12,147 | INFO | Epoch 38/50: loss=0.0904, val_auc=0.9909, DAT=0.996, NET=0.987, SERT=0.990
+2025-12-25 15:31:14,076 | INFO | Epoch 39/50: loss=0.0864, val_auc=0.9888, DAT=0.997, NET=0.980, SERT=0.989
+2025-12-25 15:31:16,037 | INFO | Epoch 40/50: loss=0.0892, val_auc=0.9899, DAT=0.997, NET=0.984, SERT=0.989
+2025-12-25 15:31:17,925 | INFO | Epoch 41/50: loss=0.0873, val_auc=0.9887, DAT=0.997, NET=0.981, SERT=0.988
+2025-12-25 15:31:19,889 | INFO | Epoch 42/50: loss=0.0734, val_auc=0.9868, DAT=0.992, NET=0.980, SERT=0.988
+2025-12-25 15:31:21,787 | INFO | Epoch 43/50: loss=0.0847, val_auc=0.9885, DAT=0.997, NET=0.980, SERT=0.989
+2025-12-25 15:31:23,620 | INFO | Epoch 44/50: loss=0.0798, val_auc=0.9885, DAT=0.997, NET=0.980, SERT=0.989
+2025-12-25 15:31:25,546 | INFO | Epoch 45/50: loss=0.0733, val_auc=0.9899, DAT=0.997, NET=0.981, SERT=0.991
+2025-12-25 15:31:27,521 | INFO | Epoch 46/50: loss=0.0764, val_auc=0.9888, DAT=0.996, NET=0.982, SERT=0.989
+2025-12-25 15:31:29,409 | INFO | Epoch 47/50: loss=0.0771, val_auc=0.9899, DAT=0.996, NET=0.982, SERT=0.992
+2025-12-25 15:31:31,296 | INFO | Epoch 48/50: loss=0.0837, val_auc=0.9905, DAT=0.996, NET=0.983, SERT=0.993
+2025-12-25 15:31:33,220 | INFO | Epoch 49/50: loss=0.0670, val_auc=0.9902, DAT=0.997, NET=0.985, SERT=0.989
+2025-12-25 15:31:33,220 | INFO | Early stopping after 15 epochs without improvement
+2025-12-25 15:31:33,248 | INFO | 
+======================================================================
+2025-12-25 15:31:33,248 | INFO | FINAL EVALUATION
+2025-12-25 15:31:33,248 | INFO | ======================================================================
+2025-12-25 15:31:33,347 | INFO | Test Metrics:
+2025-12-25 15:31:33,349 | INFO |   DAT_auc: 0.9820
+2025-12-25 15:31:33,349 | INFO |   DAT_pr_auc: 0.9449
+2025-12-25 15:31:33,349 | INFO |   NET_auc: 0.9531
+2025-12-25 15:31:33,349 | INFO |   NET_pr_auc: 0.8966
+2025-12-25 15:31:33,349 | INFO |   SERT_auc: 0.9692
+2025-12-25 15:31:33,349 | INFO |   SERT_pr_auc: 0.9652
+2025-12-25 15:31:33,349 | INFO |   mean_auc: 0.9681
+2025-12-25 15:31:33,351 | INFO |   mean_pr_auc: 0.9356
+2025-12-25 15:31:33,351 | INFO | 
+Stereo Sensitivity Test:
+2025-12-25 15:31:33,368 | INFO |   Amphetamine: d=0.747 l=0.547
+2025-12-25 15:31:33,386 | INFO |   Methamphetamine: d=0.765 l=0.645
+2025-12-25 15:31:33,402 | INFO |   Amphetamine-NET: d=0.844 l=0.614
+2025-12-25 15:31:33,419 | INFO |   MDMA: d=0.774 l=0.809
+2025-12-25 15:31:33,436 | INFO |   Cathinone: d=0.773 l=0.755
+2025-12-25 15:31:33,455 | INFO |   Methylphenidate: d=0.060 l=0.045
+2025-12-25 15:31:33,455 | INFO | Stereo sensitivity: 83.33%
+2025-12-25 15:31:33,483 | INFO | 
+======================================================================
+2025-12-25 15:31:33,483 | INFO | SUCCESS CRITERIA
+2025-12-25 15:31:33,483 | INFO | ======================================================================
+2025-12-25 15:31:33,483 | INFO |   [PASS] Overall ROC-AUC >= 0.85
+2025-12-25 15:31:33,485 | INFO |   [PASS] Substrate PR-AUC >= 0.65
+2025-12-25 15:31:33,485 | INFO |   [PASS] Stereo sensitivity >= 80%
+2025-12-25 15:31:33,488 | INFO | 
+Results saved to outputs
+2025-12-25 15:31:33,488 | INFO | ======================================================================
+2025-12-25 15:31:33,488 | INFO | TRAINING COMPLETE - ALL CRITERIA PASSED!
+2025-12-25 15:31:33,488 | INFO | ======================================================================
+2025-12-28 11:38:21,161 | INFO | Forcing CPU training
+2025-12-28 11:38:21,161 | INFO | Device: cpu
+2025-12-28 11:38:21,161 | INFO | CPU cores: 12
+2025-12-28 11:38:21,175 | INFO | Feature dimensions: node=86, edge=18
+2025-12-28 11:38:21,175 | INFO | 
+======================================================================
+2025-12-28 11:38:21,175 | INFO | PHASE 1: PRETRAINING ON ALL TRANSPORTERS
+2025-12-28 11:38:21,175 | INFO | ======================================================================
+2025-12-28 11:38:21,175 | INFO | Loading pretraining data (all transporters)...
+2025-12-28 11:38:21,175 | INFO | Loading cached pretraining data from data\pretrain_data.parquet
+2025-12-28 11:38:21,539 | INFO |   Loaded 1509 records, 503 unique compounds
+2025-12-28 11:38:21,539 | INFO | Available targets: ['DAT', 'NET', 'SERT']
+2025-12-28 11:38:21,539 | INFO | Creating molecular graphs for pretraining...
+2025-12-28 11:38:23,745 | INFO | Created 1509 graphs
+2025-12-28 11:38:23,750 | INFO | Pretrain split: Train=1282, Val=150
+2025-12-28 11:38:23,857 | INFO | Pretrain model parameters: 138,057
+2025-12-28 11:38:25,750 | INFO | Pretrain Epoch 1/30: loss=0.4724, val_auc=0.7510
+2025-12-28 11:38:27,747 | INFO | Pretrain Epoch 2/30: loss=0.4627, val_auc=0.7715
+2025-12-28 11:38:29,376 | INFO | Pretrain Epoch 3/30: loss=0.4342, val_auc=0.8013
+2025-12-28 11:38:30,833 | INFO | Pretrain Epoch 4/30: loss=0.4126, val_auc=0.8248
+2025-12-28 11:38:32,446 | INFO | Pretrain Epoch 5/30: loss=0.3753, val_auc=0.8370
+2025-12-28 11:38:34,060 | INFO | Pretrain Epoch 6/30: loss=0.3475, val_auc=0.8506
+2025-12-28 11:38:35,576 | INFO | Pretrain Epoch 7/30: loss=0.3103, val_auc=0.8636
+2025-12-28 11:38:37,218 | INFO | Pretrain Epoch 8/30: loss=0.2934, val_auc=0.8729
+2025-12-28 11:38:39,030 | INFO | Pretrain Epoch 9/30: loss=0.2619, val_auc=0.8876
+2025-12-28 11:38:40,547 | INFO | Pretrain Epoch 10/30: loss=0.2411, val_auc=0.8981
+2025-12-28 11:38:41,955 | INFO | Pretrain Epoch 11/30: loss=0.2220, val_auc=0.9052
+2025-12-28 11:38:43,434 | INFO | Pretrain Epoch 12/30: loss=0.2171, val_auc=0.9212
+2025-12-28 11:38:44,765 | INFO | Pretrain Epoch 13/30: loss=0.2026, val_auc=0.9216
+2025-12-28 11:38:46,153 | INFO | Pretrain Epoch 14/30: loss=0.2078, val_auc=0.9241
+2025-12-28 11:38:47,590 | INFO | Pretrain Epoch 15/30: loss=0.2001, val_auc=0.9335
+2025-12-28 11:38:49,002 | INFO | Pretrain Epoch 16/30: loss=0.1834, val_auc=0.9337
+2025-12-28 11:38:50,415 | INFO | Pretrain Epoch 17/30: loss=0.1690, val_auc=0.9317
+2025-12-28 11:38:51,741 | INFO | Pretrain Epoch 18/30: loss=0.1502, val_auc=0.9379
+2025-12-28 11:38:53,163 | INFO | Pretrain Epoch 19/30: loss=0.1540, val_auc=0.9407
+2025-12-28 11:38:54,586 | INFO | Pretrain Epoch 20/30: loss=0.1515, val_auc=0.9369
+2025-12-28 11:38:56,031 | INFO | Pretrain Epoch 21/30: loss=0.1490, val_auc=0.9443
+2025-12-28 11:38:57,520 | INFO | Pretrain Epoch 22/30: loss=0.1497, val_auc=0.9440
+2025-12-28 11:38:58,965 | INFO | Pretrain Epoch 23/30: loss=0.1370, val_auc=0.9483
+2025-12-28 11:39:00,371 | INFO | Pretrain Epoch 24/30: loss=0.1467, val_auc=0.9518
+2025-12-28 11:39:01,820 | INFO | Pretrain Epoch 25/30: loss=0.1308, val_auc=0.9523
+2025-12-28 11:39:03,210 | INFO | Pretrain Epoch 26/30: loss=0.1330, val_auc=0.9516
+2025-12-28 11:39:04,588 | INFO | Pretrain Epoch 27/30: loss=0.1249, val_auc=0.9527
+2025-12-28 11:39:05,928 | INFO | Pretrain Epoch 28/30: loss=0.1260, val_auc=0.9485
+2025-12-28 11:39:07,415 | INFO | Pretrain Epoch 29/30: loss=0.1229, val_auc=0.9527
+2025-12-28 11:39:08,903 | INFO | Pretrain Epoch 30/30: loss=0.1275, val_auc=0.9483
+2025-12-28 11:39:08,920 | INFO | Pretraining complete! Best val AUC: 0.9527
+2025-12-28 11:39:08,937 | INFO | 
+======================================================================
+2025-12-28 11:39:08,937 | INFO | PHASE 2: FINE-TUNING ON MONOAMINE TRANSPORTERS
+2025-12-28 11:39:08,939 | INFO | ======================================================================
+2025-12-28 11:39:08,939 | INFO | Loading fine-tuning data (monoamines only)...
+2025-12-28 11:39:09,247 | INFO | Total records: 639
+2025-12-28 11:39:09,255 | INFO | Unique compounds: 200
+2025-12-28 11:39:09,263 | INFO | DAT: 81 substrates, 48 blockers, 84 inactive
+2025-12-28 11:39:09,267 | INFO | NET: 94 substrates, 47 blockers, 72 inactive
+2025-12-28 11:39:09,269 | INFO | SERT: 63 substrates, 69 blockers, 81 inactive
+2025-12-28 11:39:09,271 | INFO |   Literature: 200 compounds
+2025-12-28 11:39:09,341 | INFO | Generated 615 SAR-expanded records
+2025-12-28 11:39:09,341 | INFO | Unique compounds: 205
+2025-12-28 11:39:09,341 | INFO |   SAR expanded: 205 compounds
+2025-12-28 11:39:09,358 | INFO | Generated 162 decoy records
+2025-12-28 11:39:09,360 | INFO | Unique decoys: 54
+2025-12-28 11:39:09,360 | INFO |   Decoys: 54 compounds
+2025-12-28 11:39:09,360 | INFO |   Combined: 416 unique compounds
+2025-12-28 11:42:41,942 | INFO | Stereoisomer augmentation: 1416 -> 1926 records
+2025-12-28 11:42:41,964 | INFO |   Unique compounds: 416 -> 549
+2025-12-28 11:42:41,972 | INFO |   After stereo augmentation: 549 compounds
+2025-12-28 11:42:41,972 | INFO | Creating molecular graphs for fine-tuning...
+2025-12-28 11:42:45,113 | INFO | Created 1926 graphs
+2025-12-28 11:42:45,116 | INFO | Fine-tune split: Train=1540, Val=192, Test=194
+2025-12-28 11:42:45,176 | INFO | Fine-tune model parameters: 164,841
+2025-12-28 11:42:47,550 | INFO | Epoch 1/50: loss=0.4186, val_auc=0.9171, DAT=0.895, NET=0.934, SERT=0.923
+2025-12-28 11:42:47,590 | INFO |   -> New best model saved!
+2025-12-28 11:42:49,619 | INFO | Epoch 2/50: loss=0.3231, val_auc=0.9389, DAT=0.923, NET=0.939, SERT=0.954
+2025-12-28 11:42:49,630 | INFO |   -> New best model saved!
+2025-12-28 11:42:51,867 | INFO | Epoch 3/50: loss=0.2632, val_auc=0.9482, DAT=0.937, NET=0.943, SERT=0.965
+2025-12-28 11:42:51,871 | INFO |   -> New best model saved!
+2025-12-28 11:42:53,888 | INFO | Epoch 4/50: loss=0.2245, val_auc=0.9530, DAT=0.950, NET=0.949, SERT=0.960
+2025-12-28 11:42:53,900 | INFO |   -> New best model saved!
+2025-12-28 11:42:56,107 | INFO | Epoch 5/50: loss=0.2032, val_auc=0.9592, DAT=0.958, NET=0.953, SERT=0.967
+2025-12-28 11:42:56,116 | INFO |   -> New best model saved!
+2025-12-28 11:42:58,338 | INFO | Epoch 6/50: loss=0.1902, val_auc=0.9615, DAT=0.963, NET=0.955, SERT=0.966
+2025-12-28 11:42:58,348 | INFO |   -> New best model saved!
+2025-12-28 11:43:00,910 | INFO | Epoch 7/50: loss=0.1853, val_auc=0.9659, DAT=0.969, NET=0.961, SERT=0.968
+2025-12-28 11:43:00,914 | INFO |   -> New best model saved!
+2025-12-28 11:43:03,183 | INFO | Epoch 8/50: loss=0.1732, val_auc=0.9659, DAT=0.969, NET=0.961, SERT=0.968
+2025-12-28 11:43:03,194 | INFO |   -> New best model saved!
+2025-12-28 11:43:05,425 | INFO | Epoch 9/50: loss=0.1740, val_auc=0.9668, DAT=0.970, NET=0.962, SERT=0.969
+2025-12-28 11:43:05,436 | INFO |   -> New best model saved!
+2025-12-28 11:43:07,489 | INFO | Epoch 10/50: loss=0.1729, val_auc=0.9678, DAT=0.970, NET=0.963, SERT=0.970
+2025-12-28 11:43:07,491 | INFO |   -> New best model saved!
+2025-12-28 11:43:09,561 | INFO | Epoch 11/50: loss=0.1627, val_auc=0.9672, DAT=0.975, NET=0.965, SERT=0.962
+2025-12-28 11:43:12,089 | INFO | Epoch 12/50: loss=0.1613, val_auc=0.9699, DAT=0.972, NET=0.969, SERT=0.969
+2025-12-28 11:43:12,099 | INFO |   -> New best model saved!
+2025-12-28 11:43:14,463 | INFO | Epoch 13/50: loss=0.1489, val_auc=0.9730, DAT=0.981, NET=0.970, SERT=0.968
+2025-12-28 11:43:14,469 | INFO |   -> New best model saved!
+2025-12-28 11:43:16,587 | INFO | Epoch 14/50: loss=0.1353, val_auc=0.9763, DAT=0.985, NET=0.973, SERT=0.970
+2025-12-28 11:43:16,593 | INFO |   -> New best model saved!
+2025-12-28 11:43:18,608 | INFO | Epoch 15/50: loss=0.1308, val_auc=0.9744, DAT=0.982, NET=0.971, SERT=0.970
+2025-12-28 11:43:20,840 | INFO | Epoch 16/50: loss=0.1316, val_auc=0.9799, DAT=0.988, NET=0.974, SERT=0.978
+2025-12-28 11:43:20,850 | INFO |   -> New best model saved!
+2025-12-28 11:43:23,049 | INFO | Epoch 17/50: loss=0.1226, val_auc=0.9782, DAT=0.989, NET=0.974, SERT=0.971
+2025-12-28 11:43:25,173 | INFO | Epoch 18/50: loss=0.1213, val_auc=0.9777, DAT=0.981, NET=0.976, SERT=0.975
+2025-12-28 11:43:27,408 | INFO | Epoch 19/50: loss=0.1168, val_auc=0.9802, DAT=0.989, NET=0.977, SERT=0.974
+2025-12-28 11:43:27,420 | INFO |   -> New best model saved!
+2025-12-28 11:43:29,453 | INFO | Epoch 20/50: loss=0.1136, val_auc=0.9810, DAT=0.991, NET=0.978, SERT=0.973
+2025-12-28 11:43:29,463 | INFO |   -> New best model saved!
+2025-12-28 11:43:31,273 | INFO | Epoch 21/50: loss=0.1080, val_auc=0.9822, DAT=0.991, NET=0.978, SERT=0.977
+2025-12-28 11:43:31,280 | INFO |   -> New best model saved!
+2025-12-28 11:43:33,170 | INFO | Epoch 22/50: loss=0.1188, val_auc=0.9823, DAT=0.993, NET=0.977, SERT=0.977
+2025-12-28 11:43:33,180 | INFO |   -> New best model saved!
+2025-12-28 11:43:35,123 | INFO | Epoch 23/50: loss=0.1180, val_auc=0.9825, DAT=0.992, NET=0.979, SERT=0.976
+2025-12-28 11:43:35,133 | INFO |   -> New best model saved!
+2025-12-28 11:43:37,133 | INFO | Epoch 24/50: loss=0.1003, val_auc=0.9843, DAT=0.995, NET=0.978, SERT=0.981
+2025-12-28 11:43:37,143 | INFO |   -> New best model saved!
+2025-12-28 11:43:39,054 | INFO | Epoch 25/50: loss=0.1047, val_auc=0.9853, DAT=0.995, NET=0.980, SERT=0.982
+2025-12-28 11:43:39,064 | INFO |   -> New best model saved!
+2025-12-28 11:43:41,003 | INFO | Epoch 26/50: loss=0.1045, val_auc=0.9844, DAT=0.995, NET=0.978, SERT=0.980
+2025-12-28 11:43:42,923 | INFO | Epoch 27/50: loss=0.1083, val_auc=0.9847, DAT=0.995, NET=0.979, SERT=0.980
+2025-12-28 11:43:44,825 | INFO | Epoch 28/50: loss=0.1041, val_auc=0.9850, DAT=0.995, NET=0.979, SERT=0.981
+2025-12-28 11:43:46,951 | INFO | Epoch 29/50: loss=0.0994, val_auc=0.9848, DAT=0.995, NET=0.979, SERT=0.981
+2025-12-28 11:43:48,995 | INFO | Epoch 30/50: loss=0.0997, val_auc=0.9848, DAT=0.995, NET=0.979, SERT=0.981
+2025-12-28 11:43:50,866 | INFO | Epoch 31/50: loss=0.1248, val_auc=0.9843, DAT=0.991, NET=0.978, SERT=0.983
+2025-12-28 11:43:52,796 | INFO | Epoch 32/50: loss=0.1083, val_auc=0.9862, DAT=0.994, NET=0.979, SERT=0.986
+2025-12-28 11:43:52,806 | INFO |   -> New best model saved!
+2025-12-28 11:43:54,731 | INFO | Epoch 33/50: loss=0.1029, val_auc=0.9856, DAT=0.992, NET=0.978, SERT=0.987
+2025-12-28 11:43:56,742 | INFO | Epoch 34/50: loss=0.0973, val_auc=0.9865, DAT=0.994, NET=0.980, SERT=0.986
+2025-12-28 11:43:56,752 | INFO |   -> New best model saved!
+2025-12-28 11:43:58,603 | INFO | Epoch 35/50: loss=0.0959, val_auc=0.9832, DAT=0.997, NET=0.981, SERT=0.972
+2025-12-28 11:44:00,551 | INFO | Epoch 36/50: loss=0.0934, val_auc=0.9868, DAT=0.998, NET=0.982, SERT=0.980
+2025-12-28 11:44:00,560 | INFO |   -> New best model saved!
+2025-12-28 11:44:02,488 | INFO | Epoch 37/50: loss=0.0895, val_auc=0.9884, DAT=0.998, NET=0.980, SERT=0.987
+2025-12-28 11:44:02,498 | INFO |   -> New best model saved!
+2025-12-28 11:44:04,374 | INFO | Epoch 38/50: loss=0.0937, val_auc=0.9873, DAT=0.996, NET=0.981, SERT=0.984
+2025-12-28 11:44:06,322 | INFO | Epoch 39/50: loss=0.0818, val_auc=0.9901, DAT=0.999, NET=0.983, SERT=0.989
+2025-12-28 11:44:06,332 | INFO |   -> New best model saved!
+2025-12-28 11:44:08,310 | INFO | Epoch 40/50: loss=0.0800, val_auc=0.9892, DAT=0.998, NET=0.982, SERT=0.988
+2025-12-28 11:44:10,190 | INFO | Epoch 41/50: loss=0.0848, val_auc=0.9885, DAT=0.996, NET=0.983, SERT=0.987
+2025-12-28 11:44:12,076 | INFO | Epoch 42/50: loss=0.0802, val_auc=0.9884, DAT=0.996, NET=0.983, SERT=0.986
+2025-12-28 11:44:14,067 | INFO | Epoch 43/50: loss=0.0756, val_auc=0.9908, DAT=0.998, NET=0.984, SERT=0.990
+2025-12-28 11:44:14,079 | INFO |   -> New best model saved!
+2025-12-28 11:44:16,011 | INFO | Epoch 44/50: loss=0.0725, val_auc=0.9886, DAT=0.997, NET=0.981, SERT=0.988
+2025-12-28 11:44:17,912 | INFO | Epoch 45/50: loss=0.0795, val_auc=0.9876, DAT=0.996, NET=0.981, SERT=0.987
+2025-12-28 11:44:19,645 | INFO | Epoch 46/50: loss=0.0682, val_auc=0.9886, DAT=0.995, NET=0.983, SERT=0.988
+2025-12-28 11:44:21,156 | INFO | Epoch 47/50: loss=0.0711, val_auc=0.9889, DAT=0.996, NET=0.984, SERT=0.987
+2025-12-28 11:44:22,684 | INFO | Epoch 48/50: loss=0.0817, val_auc=0.9893, DAT=0.996, NET=0.983, SERT=0.989
+2025-12-28 11:44:24,534 | INFO | Epoch 49/50: loss=0.0733, val_auc=0.9888, DAT=0.996, NET=0.982, SERT=0.989
+2025-12-28 11:44:26,408 | INFO | Epoch 50/50: loss=0.0667, val_auc=0.9876, DAT=0.990, NET=0.983, SERT=0.989
+2025-12-28 11:44:26,449 | INFO | 
+======================================================================
+2025-12-28 11:44:26,449 | INFO | FINAL EVALUATION
+2025-12-28 11:44:26,449 | INFO | ======================================================================
+2025-12-28 11:44:26,537 | INFO | Test Metrics:
+2025-12-28 11:44:26,539 | INFO |   DAT_auc: 0.9814
+2025-12-28 11:44:26,539 | INFO |   DAT_pr_auc: 0.9450
+2025-12-28 11:44:26,539 | INFO |   NET_auc: 0.9627
+2025-12-28 11:44:26,539 | INFO |   NET_pr_auc: 0.9329
+2025-12-28 11:44:26,539 | INFO |   SERT_auc: 0.9794
+2025-12-28 11:44:26,539 | INFO |   SERT_pr_auc: 0.9865
+2025-12-28 11:44:26,539 | INFO |   mean_auc: 0.9745
+2025-12-28 11:44:26,539 | INFO |   mean_pr_auc: 0.9548
+2025-12-28 11:44:26,539 | INFO | 
+Stereo Sensitivity Test:
+2025-12-28 11:44:26,572 | INFO |   Amphetamine: d=0.716 l=0.425
+2025-12-28 11:44:26,594 | INFO |   Methamphetamine: d=0.762 l=0.625
+2025-12-28 11:44:26,610 | INFO |   Amphetamine-NET: d=0.861 l=0.613
+2025-12-28 11:44:26,628 | INFO |   MDMA: d=0.853 l=0.853
+2025-12-28 11:44:26,638 | INFO |   Cathinone: d=0.713 l=0.676
+2025-12-28 11:44:26,658 | INFO |   Methylphenidate: d=0.054 l=0.039
+2025-12-28 11:44:26,658 | INFO | Stereo sensitivity: 100.00%
+2025-12-28 11:44:26,680 | INFO | 
+======================================================================
+2025-12-28 11:44:26,680 | INFO | SUCCESS CRITERIA
+2025-12-28 11:44:26,682 | INFO | ======================================================================
+2025-12-28 11:44:26,682 | INFO |   [PASS] Overall ROC-AUC >= 0.85
+2025-12-28 11:44:26,682 | INFO |   [PASS] Substrate PR-AUC >= 0.65
+2025-12-28 11:44:26,682 | INFO |   [PASS] Stereo sensitivity >= 80%
+2025-12-28 11:44:26,690 | INFO | 
+Results saved to outputs
+2025-12-28 11:44:26,692 | INFO | ======================================================================
+2025-12-28 11:44:26,692 | INFO | TRAINING COMPLETE - ALL CRITERIA PASSED!
+2025-12-28 11:44:26,692 | INFO | ======================================================================

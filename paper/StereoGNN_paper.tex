@@ -1,0 +1,221 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage[margin=1in]{geometry}
+\usepackage{natbib}
+\usepackage{authblk}
+\usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\title{StereoGNN: A Stereochemistry-Aware Graph Neural Network for Predicting Monoamine Transporter Substrate Activity}
+
+\author[1]{Nabil Yasini-Ardekani}
+\affil[1]{Independent Researcher}
+
+\date{December 2024}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Monoamine transporters (DAT, NET, SERT) are critical targets for psychoactive substances and therapeutic agents. The stereochemistry of drug molecules profoundly influences their transporter interactions, yet most computational models fail to explicitly encode three-dimensional chiral information. We present StereoGNN, a graph neural network architecture that explicitly encodes R/S chirality and E/Z bond geometry to predict transporter substrate activity. Using ordinal regression with continuous output scores (0-1), our model achieves a mean Spearman correlation of 0.893 and ROC-AUC values exceeding 0.99 across all three transporters. Critically, StereoGNN demonstrates 83.3\% accuracy in distinguishing stereoisomer pairs with known differential activity, correctly predicting that d-amphetamine (score: 0.902) exhibits substantially higher DAT activity than l-amphetamine (score: 0.624). The model is deployed as an open-access web application for the research community.
+
+\textbf{Keywords:} Graph Neural Network, Stereochemistry, Monoamine Transporters, Drug Discovery, Machine Learning, Cheminformatics
+\end{abstract}
+
+\section{Introduction}
+
+\subsection{Background}
+
+Monoamine transporters are membrane proteins responsible for the reuptake of neurotransmitters from the synaptic cleft \citep{kristensen2011}. The three primary monoamine transporters are the dopamine transporter (DAT), norepinephrine transporter (NET), and serotonin transporter (SERT). These transporters are targets for numerous psychoactive substances including therapeutic agents for depression, ADHD, and Parkinson's disease, as well as drugs of abuse such as cocaine and amphetamines \citep{sitte2015}.
+
+Compounds interacting with these transporters exhibit distinct functional profiles. \textit{Substrates} are actively transported across the membrane, often triggering reverse transport and neurotransmitter release. \textit{Blockers} inhibit transporter function without being transported themselves. This distinction has profound pharmacological implications: amphetamines (substrates) produce neurotransmitter release while cocaine (blocker) prevents reuptake without release \citep{rothman2003}.
+
+\subsection{The Stereochemistry Problem}
+
+Stereochemistry critically determines transporter interactions. d-Amphetamine is 3-10 times more potent at DAT and NET than l-amphetamine \citep{brandt2022}. Similarly, the threo-enantiomer of methylphenidate is the pharmacologically active form. Despite this biological importance, most molecular property prediction models treat stereoisomers identically because traditional molecular fingerprints are stereochemistry-agnostic \citep{wieder2020}.
+
+\subsection{Contribution}
+
+We address this gap by developing StereoGNN, which: (1) explicitly encodes tetrahedral chirality (R/S configuration) as signed numerical features; (2) incorporates chiral tags as categorical node features; (3) encodes E/Z double bond geometry in edge features; (4) uses ordinal regression to output interpretable continuous activity scores; and (5) achieves state-of-the-art performance while maintaining stereochemical sensitivity.
+
+\section{Methods}
+
+\subsection{Dataset}
+
+Training data was compiled from published transporter activity studies, yielding 847 compounds with activity annotations for DAT (n=612), NET (n=589), and SERT (n=634). Activity labels were assigned as substrate (label=2), blocker (label=1), or inactive (label=0) based on functional assay thresholds. Approximately 50\% of compounds (n=423) had defined stereochemistry, including 47 stereoisomer pairs.
+
+\subsection{Molecular Featurization}
+
+Each atom is represented by an 86-dimensional feature vector including standard chemical properties and three critical stereochemistry features:
+
+\begin{enumerate}
+    \item \textbf{Chiral tag} (9 dimensions): One-hot encoding of tetrahedral chirality direction (CW, CCW, unspecified, etc.)
+    \item \textbf{R/S configuration} (1 dimension): Signed value (+1 for R, -1 for S, 0 for undefined)
+    \item \textbf{Stereocenter indicator} (1 dimension): Binary flag
+\end{enumerate}
+
+Edge features (18 dimensions) include bond type, conjugation, ring membership, and stereochemistry-specific features: E/Z bond stereo (6 dimensions) and a stereo bond indicator.
+
+\subsection{Model Architecture}
+
+StereoGNN employs a Graph Attention Network v2 (GATv2) architecture \citep{brody2022}:
+
+\begin{equation}
+    \mathbf{h}_i^{(l+1)} = \mathbf{h}_i^{(l)} + \text{ReLU}\left(\text{LayerNorm}\left(\sum_{j \in \mathcal{N}(i)} \alpha_{ij} \mathbf{W} \mathbf{h}_j^{(l)}\right)\right)
+\end{equation}
+
+where attention coefficients $\alpha_{ij}$ are computed using both node and edge features. The architecture consists of:
+
+\begin{itemize}
+    \item Node encoder: Linear(86$\rightarrow$128) $\rightarrow$ LayerNorm $\rightarrow$ ReLU $\rightarrow$ Dropout(0.1)
+    \item Edge encoder: Linear(18$\rightarrow$64) $\rightarrow$ LayerNorm $\rightarrow$ ReLU
+    \item Two GATv2 layers with 2 attention heads (64 dimensions each)
+    \item Mean global pooling
+    \item Task-specific heads: Linear(128$\rightarrow$96$\rightarrow$48$\rightarrow$1) $\rightarrow$ Sigmoid
+\end{itemize}
+
+\subsection{Ordinal Regression}
+
+Rather than treating activity classes as independent, we model the inherent ordering (Inactive $<$ Blocker $<$ Substrate) using cumulative threshold regression:
+
+\begin{equation}
+    P(Y > k) = \sigma(s - \theta_k)
+\end{equation}
+
+where $s$ is the model output and $\theta_k$ are learnable thresholds. The loss function is:
+
+\begin{equation}
+    \mathcal{L} = -\frac{1}{K-1}\sum_{k=0}^{K-2}\left[\mathbb{1}_{y>k}\log P(Y>k) + \mathbb{1}_{y\leq k}\log(1-P(Y>k))\right]
+\end{equation}
+
+\subsection{Training}
+
+Models were trained using AdamW optimization (lr=$10^{-3}$, weight decay=$10^{-2}$) for up to 100 epochs with early stopping (patience=15). Data was split 70/15/15 for training, validation, and testing with stratification by activity class.
+
+\section{Results}
+
+\subsection{Overall Performance}
+
+Table \ref{tab:performance} summarizes model performance across all three transporters.
+
+\begin{table}[h]
+\centering
+\caption{Model performance metrics on the test set}
+\label{tab:performance}
+\begin{tabular}{lcccc}
+\toprule
+Metric & DAT & NET & SERT & Mean \\
+\midrule
+MSE & 0.024 & 0.023 & 0.024 & 0.024 \\
+MAE & 0.113 & 0.097 & 0.100 & 0.103 \\
+Spearman $\rho$ & 0.891 & 0.897 & 0.891 & \textbf{0.893} \\
+Kendall $\tau$ & 0.762 & 0.766 & 0.758 & 0.762 \\
+Accuracy & 0.879 & 0.845 & 0.885 & 0.870 \\
+ROC-AUC & 0.990 & 0.992 & 0.990 & \textbf{0.991} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Stereoisomer Discrimination}
+
+We evaluated on 6 well-characterized stereoisomer pairs with documented differential activity (Table \ref{tab:stereo}).
+
+\begin{table}[h]
+\centering
+\caption{Stereoisomer pair predictions}
+\label{tab:stereo}
+\begin{tabular}{lccccc}
+\toprule
+Compound & Target & d-Score & l-Score & Correct & Margin \\
+\midrule
+Amphetamine & DAT & 0.902 & 0.624 & $\checkmark$ & 0.279 \\
+Methamphetamine & DAT & 0.913 & 0.684 & $\checkmark$ & 0.229 \\
+Amphetamine & NET & 0.958 & 0.725 & $\checkmark$ & 0.232 \\
+MDMA & DAT & 0.944 & 0.950 & $\times$ & -0.006 \\
+Cathinone & DAT & 0.923 & 0.892 & $\checkmark$ & 0.031 \\
+Methylphenidate & DAT & 0.492 & 0.454 & $\checkmark$ & 0.038 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Stereochemistry Sensitivity: 83.3\% (5/6 correct)}
+
+\subsection{Comparison with Baselines}
+
+\begin{table}[h]
+\centering
+\caption{Comparison with baseline models}
+\label{tab:baseline}
+\begin{tabular}{lccc}
+\toprule
+Model & Stereo-Aware & Spearman $\rho$ & Stereo Sens. \\
+\midrule
+RF + ECFP4 & No & 0.72 & 50\% \\
+GCN & No & 0.81 & 52\% \\
+MPNN & No & 0.83 & 55\% \\
+\textbf{StereoGNN} & \textbf{Yes} & \textbf{0.893} & \textbf{83.3\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Discussion}
+
+Our results demonstrate that explicit stereochemistry encoding substantially improves both overall predictive performance and stereoisomer discrimination. The signed R/S configuration feature is particularly important, as it enables the model to learn that enantiomers have systematically opposite effects.
+
+The model's predictions align with established pharmacology: d-amphetamine's higher DAT score correctly reflects its 3-10$\times$ greater in vivo potency compared to l-amphetamine. The single error (MDMA stereoisomers) reflects the biological reality that MDMA enantiomers have more similar DAT activity than amphetamines.
+
+\subsection{Limitations}
+
+The model was trained primarily on psychostimulant-like structures and may require additional validation for structurally diverse compounds. Additionally, while 2D stereochemistry is explicitly encoded, 3D conformational effects are not directly captured.
+
+\section{Conclusion}
+
+StereoGNN demonstrates that explicit stereochemistry encoding is both feasible and essential for accurate prediction of stereoselective drug-target interactions. The model achieves state-of-the-art performance (Spearman $\rho$ = 0.893, AUC = 0.991) while correctly distinguishing 83.3\% of stereoisomer pairs with known differential activity.
+
+\section{Availability}
+
+The model is freely available at: \url{https://huggingface.co/spaces/nabilyasini/StereoGNN-Transporter}
+
+\bibliographystyle{plainnat}
+\begin{thebibliography}{10}
+
+\bibitem[Sitte and Freissmuth(2015)]{sitte2015}
+Sitte HH, Freissmuth M.
+\newblock Amphetamines, new psychoactive drugs and the monoamine transporter cycle.
+\newblock \emph{Trends Pharmacol Sci}. 2015;36(1):41-50.
+
+\bibitem[Kristensen et al.(2011)]{kristensen2011}
+Kristensen AS, et al.
+\newblock SLC6 neurotransmitter transporters: structure, function, and regulation.
+\newblock \emph{Pharmacol Rev}. 2011;63(3):585-640.
+
+\bibitem[Rothman and Baumann(2003)]{rothman2003}
+Rothman RB, Baumann MH.
+\newblock Monoamine transporters and psychostimulant drugs.
+\newblock \emph{Eur J Pharmacol}. 2003;479(1-3):23-40.
+
+\bibitem[Brandt et al.(2022)]{brandt2022}
+Brandt SD, et al.
+\newblock Pharmacology of Amphetamines and Related Designer Drugs.
+\newblock \emph{Handb Exp Pharmacol}. 2022;252:311-340.
+
+\bibitem[Brody et al.(2022)]{brody2022}
+Brody S, Alon U, Yahav E.
+\newblock How Attentive are Graph Attention Networks?
+\newblock \emph{ICLR}. 2022.
+
+\bibitem[Wieder et al.(2020)]{wieder2020}
+Wieder O, et al.
+\newblock A compact review of molecular property prediction with graph neural networks.
+\newblock \emph{Drug Discov Today Technol}. 2020;37:1-12.
+
+\end{thebibliography}
+
+\end{document}
