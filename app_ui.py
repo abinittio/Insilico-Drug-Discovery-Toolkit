@@ -10,7 +10,15 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from pathlib import Path
-import torch
+
+# Optional torch import
+try:
+    import torch
+    TORCH_AVAILABLE = True
+except ImportError:
+    TORCH_AVAILABLE = False
+    torch = None
+
 from rdkit import Chem
 from rdkit.Chem import Draw, AllChem, Descriptors, DataStructs
 import io
