@@ -4,8 +4,8 @@ numpy>=1.24.0,<2.0.0
 pandas>=2.0.0
 pillow>=10.0.0
 requests>=2.28.0
-rdkit-pypi
-torch==2.1.0
+rdkit
+torch
 torch-scatter
 torch-sparse
 torch-geometric
