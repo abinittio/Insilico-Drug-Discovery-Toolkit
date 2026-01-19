@@ -1,11 +1,17 @@
-# Insilico Drug Discovery Toolkit - HuggingFace/Streamlit Cloud Deployment
-# Author: Nabil Yasini-Ardekani
+# Insilico Drug Discovery Toolkit - Streamlit Cloud Deployment
 
 streamlit>=1.28.0
 numpy>=1.24.0,<2.0.0
 pandas>=2.0.0
 rdkit-pypi>=2023.9.1
-torch>=2.0.0
-torch-geometric>=2.4.0
 pillow>=10.0.0
 requests>=2.28.0
+
+# CPU-only PyTorch for Streamlit Cloud
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.1.0+cpu
+
+# PyTorch Geometric with dependencies
+torch-scatter==2.1.2+pt21cpu -f https://data.pyg.org/whl/torch-2.1.0+cpu.html
+torch-sparse==0.6.18+pt21cpu -f https://data.pyg.org/whl/torch-2.1.0+cpu.html
+torch-geometric==2.4.0
