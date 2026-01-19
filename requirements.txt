@@ -5,7 +5,8 @@ pandas>=2.0.0
 pillow>=10.0.0
 requests>=2.28.0
 rdkit-pypi>=2023.3.1b1
-torch
+torch==2.1.0
+--find-links https://data.pyg.org/whl/torch-2.1.0+cpu.html
 torch-scatter
 torch-sparse
 torch-geometric
