@@ -29,7 +29,7 @@ _smiles_cache = {}
 
 
 def name_to_smiles(name: str) -> str:
-    """Convert any chemical/drug name to SMILES using PubChem API with synonym search."""
+    """Convert any chemical/drug name to SMILES using PubChem API."""
     if not name:
         return None
 
@@ -45,42 +45,14 @@ def name_to_smiles(name: str) -> str:
         return name
 
     encoded_name = urllib.parse.quote(name)
+    url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{encoded_name}/property/IsomericSMILES/JSON"
 
-    # Method 1: Direct name lookup
-    try:
-        url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{encoded_name}/property/IsomericSMILES,CanonicalSMILES/JSON"
-        response = requests.get(url, timeout=10)
-        if response.status_code == 200:
-            data = response.json()
-            props = data.get('PropertyTable', {}).get('Properties', [{}])[0]
-            smiles = props.get('IsomericSMILES') or props.get('CanonicalSMILES')
-            if smiles:
-                _smiles_cache[cache_key] = smiles
-                return smiles
-    except:
-        pass
-
-    # Method 2: Search by synonym (finds more names)
-    try:
-        search_url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{encoded_name}/cids/JSON"
-        response = requests.get(search_url, timeout=10)
-        if response.status_code == 200:
-            data = response.json()
-            cids = data.get('IdentifierList', {}).get('CID', [])
-            if cids:
-                cid = cids[0]
-                prop_url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{cid}/property/IsomericSMILES/JSON"
-                prop_resp = requests.get(prop_url, timeout=10)
-                if prop_resp.status_code == 200:
-                    prop_data = prop_resp.json()
-                    props = prop_data.get('PropertyTable', {}).get('Properties', [{}])[0]
-                    smiles = props.get('IsomericSMILES')
-                    if smiles:
-                        _smiles_cache[cache_key] = smiles
-                        return smiles
-    except:
-        pass
-
+    response = requests.get(url, timeout=15)
+    if response.status_code == 200:
+        data = response.json()
+        smiles = data['PropertyTable']['Properties'][0]['IsomericSMILES']
+        _smiles_cache[cache_key] = smiles
+        return smiles
     return None
 
 
