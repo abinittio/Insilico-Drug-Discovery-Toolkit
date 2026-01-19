@@ -44,15 +44,19 @@ def name_to_smiles(name: str) -> str:
     if mol is not None:
         return name
 
-    encoded_name = urllib.parse.quote(name)
-    url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{encoded_name}/property/IsomericSMILES/JSON"
-
-    response = requests.get(url, timeout=15)
-    if response.status_code == 200:
-        data = response.json()
-        smiles = data['PropertyTable']['Properties'][0]['IsomericSMILES']
-        _smiles_cache[cache_key] = smiles
-        return smiles
+    try:
+        encoded_name = urllib.parse.quote(name)
+        url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{encoded_name}/property/IsomericSMILES/JSON"
+        response = requests.get(url, timeout=15)
+        if response.status_code == 200:
+            data = response.json()
+            props = data['PropertyTable']['Properties'][0]
+            smiles = props.get('IsomericSMILES') or props.get('SMILES')
+            if smiles:
+                _smiles_cache[cache_key] = smiles
+                return smiles
+    except:
+        pass
     return None
 
 
