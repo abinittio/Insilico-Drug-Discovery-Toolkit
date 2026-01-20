@@ -47,7 +47,11 @@ def name_to_smiles(name: str) -> str:
     try:
         encoded_name = urllib.parse.quote(name)
         url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{encoded_name}/property/IsomericSMILES/JSON"
-        response = requests.get(url, timeout=15)
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Accept': 'application/json',
+        }
+        response = requests.get(url, headers=headers, timeout=15)
         if response.status_code == 200:
             data = response.json()
             props = data['PropertyTable']['Properties'][0]
