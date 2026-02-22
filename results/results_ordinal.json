@@ -1,0 +1,70 @@
+{
+  "test_metrics": {
+    "DAT_mse": 0.024449815083426373,
+    "DAT_mae": 0.11273018538838986,
+    "DAT_spearman": 0.8914395603098312,
+    "DAT_kendall": 0.7621610200554575,
+    "DAT_accuracy": 0.8787878787878788,
+    "DAT_auc": 0.9904761904761905,
+    "NET_mse": 0.023140092915540856,
+    "NET_mae": 0.09727066450975311,
+    "NET_spearman": 0.8966076348963317,
+    "NET_kendall": 0.7659127362866816,
+    "NET_accuracy": 0.8450704225352113,
+    "NET_auc": 0.9924242424242424,
+    "SERT_mse": 0.023672167197417104,
+    "SERT_mae": 0.09981604583072858,
+    "SERT_spearman": 0.8907579059364216,
+    "SERT_kendall": 0.7582601284705205,
+    "SERT_accuracy": 0.8852459016393442,
+    "SERT_auc": 0.9903225806451612,
+    "mean_mse": 0.023754025065461443,
+    "mean_spearman": 0.8929350337141949,
+    "stereo_sensitivity": 0.8333333333333334
+  },
+  "stereo_results": [
+    {
+      "name": "Amphetamine",
+      "d_score": 0.902295708656311,
+      "l_score": 0.6236553192138672,
+      "correct": true,
+      "margin": 0.27864038944244385
+    },
+    {
+      "name": "Methamphetamine",
+      "d_score": 0.9131531119346619,
+      "l_score": 0.6837027668952942,
+      "correct": true,
+      "margin": 0.22945034503936768
+    },
+    {
+      "name": "Amphetamine-NET",
+      "d_score": 0.9575990438461304,
+      "l_score": 0.7251423001289368,
+      "correct": true,
+      "margin": 0.2324567437171936
+    },
+    {
+      "name": "MDMA",
+      "d_score": 0.9441308379173279,
+      "l_score": 0.9504762887954712,
+      "correct": false,
+      "margin": -0.0063454508781433105
+    },
+    {
+      "name": "Cathinone",
+      "d_score": 0.9231547117233276,
+      "l_score": 0.8916906118392944,
+      "correct": true,
+      "margin": 0.0314640998840332
+    },
+    {
+      "name": "Methylphenidate",
+      "d_score": 0.4920562207698822,
+      "l_score": 0.4539644718170166,
+      "correct": true,
+      "margin": 0.0380917489528656
+    }
+  ],
+  "timestamp": "2025-12-25T20:28:11.343466"
+}

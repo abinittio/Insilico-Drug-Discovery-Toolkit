@@ -1,0 +1,18 @@
+drug,accuracy,correct,total,issues,notes
+viloxazine,0.3333333333333333,1,3,NET: inactive vs blocker; SERT: blocker vs inactive,"Qelbree (2021) - selective NRI for ADHD, not a stimulant"
+solriamfetol,0.3333333333333333,1,3,DAT: inactive vs blocker; SERT: blocker vs inactive,"Sunosi (2019) - DNRI for narcolepsy, not a releaser"
+vortioxetine,0.0,0,3,DAT: blocker vs inactive; NET: blocker vs inactive; SERT: inactive vs blocker,Trintellix - multimodal antidepressant
+vilazodone,0.6666666666666666,2,3,SERT: substrate vs blocker,Viibryd - SSRI/5-HT1A agonist
+levomilnacipran,0.6666666666666666,2,3,SERT: inactive vs blocker,Fetzima - SNRI with NET preference
+desvenlafaxine,0.0,0,3,DAT: blocker vs inactive; NET: inactive vs blocker; SERT: inactive vs blocker,Pristiq - active metabolite of venlafaxine
+pitolisant,1.0,3,3,,"Wakix - H3 receptor antagonist, no MAT activity"
+lemborexant,1.0,3,3,,Dayvigo - orexin receptor antagonist
+esketamine,0.3333333333333333,1,3,DAT: blocker vs inactive; NET: blocker vs inactive,"Spravato - NMDA antagonist, S-enantiomer of ketamine"
+mephedrone,1.0,3,3,,"4-MMC - synthetic cathinone, triple releaser"
+alpha-pvp,1.0,3,3,,"Flakka - pyrovalerone analog, DAT/NET blocker"
+pregabalin,1.0,3,3,,"Lyrica - calcium channel modulator, no MAT activity"
+gabapentin,1.0,3,3,,"Neurontin - GABA analog, no MAT activity"
+lamotrigine,1.0,3,3,,Lamictal - sodium channel blocker
+topiramate,1.0,3,3,,"Topamax - multiple mechanisms, no MAT"
+lorcaserin,0.0,0,3,DAT: blocker vs inactive; NET: blocker vs inactive; SERT: blocker vs inactive,Belviq (withdrawn) - 5-HT2C agonist
+phentermine,0.6666666666666666,2,3,SERT: blocker vs inactive,Adipex - amphetamine congener for weight loss
