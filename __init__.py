@@ -27,7 +27,7 @@ from .featurizer import MoleculeGraphFeaturizer
 from .config import CONFIG
 
 __version__ = "1.0.0"
-__author__ = "StereoGNN Team"
+__author__ = "Nabil Sherif Abokhalil"
 
 __all__ = [
     "StereoGNN",

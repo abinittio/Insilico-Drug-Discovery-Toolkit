@@ -25,11 +25,11 @@ import torch
 class DataConfig:
     """Data curation and preprocessing configuration."""
 
-    # Project paths
-    project_root: Path = Path("C:/Users/nakhi/StereoGNN_Transporter")
-    data_dir: Path = field(default_factory=lambda: Path("C:/Users/nakhi/StereoGNN_Transporter/data"))
-    models_dir: Path = field(default_factory=lambda: Path("C:/Users/nakhi/StereoGNN_Transporter/models"))
-    results_dir: Path = field(default_factory=lambda: Path("C:/Users/nakhi/StereoGNN_Transporter/results"))
+    # Project paths (resolved relative to this file's location)
+    project_root: Path = field(default_factory=lambda: Path(__file__).resolve().parent)
+    data_dir: Path = field(default_factory=lambda: Path(__file__).resolve().parent / "data")
+    models_dir: Path = field(default_factory=lambda: Path(__file__).resolve().parent / "models")
+    results_dir: Path = field(default_factory=lambda: Path(__file__).resolve().parent / "results")
 
     # ChEMBL target IDs for monoamine transporters
     # These are the UniProt accessions used in ChEMBL
