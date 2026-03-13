@@ -17,6 +17,7 @@ import requests
 import urllib.parse
 import io
 import base64
+import streamlit.components.v1 as components
 
 st.set_page_config(
     page_title="Insilico Drug Discovery Toolkit | BETA",
@@ -273,32 +274,158 @@ def main():
     # Main input
     st.subheader("Enter Molecule")
 
-    col1, col2 = st.columns([4, 1])
-    with col1:
-        user_input = st.text_input(
-            "Enter SMILES or drug name",
-            placeholder="e.g., Amphetamine, Cocaine, Fluoxetine, or paste SMILES",
-            label_visibility="collapsed"
-        )
-    with col2:
-        predict_btn = st.button("Analyze", type="primary", use_container_width=True)
+    user_input = ""
+    predict_btn = False
 
-    # Quick examples
-    st.markdown("**Examples:**")
-    examples = ["Amphetamine", "Cocaine", "Fluoxetine", "Caffeine", "Morphine", "Diazepam"]
-    cols = st.columns(6)
-    for i, ex in enumerate(examples):
-        with cols[i]:
-            if st.button(ex, key=f"ex_{ex}", use_container_width=True):
-                st.session_state['input'] = ex
-                st.rerun()
+    tab_text, tab_draw = st.tabs(["Type name / SMILES", "Draw structure"])
 
-    if 'input' in st.session_state:
-        user_input = st.session_state['input']
-        del st.session_state['input']
-        predict_btn = True
+    with tab_text:
+        col1, col2 = st.columns([4, 1])
+        with col1:
+            user_input = st.text_input(
+                "Enter SMILES or drug name",
+                placeholder="e.g., Amphetamine, Cocaine, Fluoxetine, or paste SMILES",
+                label_visibility="collapsed"
+            )
+        with col2:
+            predict_btn = st.button("Analyze", type="primary", use_container_width=True)
+
+        # Quick examples
+        st.markdown("**Examples:**")
+        examples = ["Amphetamine", "Cocaine", "Fluoxetine", "Caffeine", "Morphine", "Diazepam"]
+        cols = st.columns(6)
+        for i, ex in enumerate(examples):
+            with cols[i]:
+                if st.button(ex, key=f"ex_{ex}", use_container_width=True):
+                    st.session_state['input'] = ex
+                    st.rerun()
+
+        if 'input' in st.session_state:
+            user_input = st.session_state['input']
+            del st.session_state['input']
+            predict_btn = True
+
+    with tab_draw:
+        jsme_html = """
+        <html>
+        <head>
+            <script src="https://jsme-editor.github.io/dist/jsme/jsme.nocache.js"></script>
+            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+            <style>
+                * { box-sizing: border-box; margin: 0; padding: 0; }
+                body { font-family: 'Inter', -apple-system, sans-serif; background: #f0fdfa; }
+                .editor-wrap {
+                    background: white;
+                    border-radius: 16px;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+                    overflow: hidden;
+                    border: 1px solid #ccfbf1;
+                }
+                .editor-header {
+                    background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+                    padding: 12px 20px;
+                    display: flex; align-items: center; gap: 10px;
+                }
+                .editor-header span {
+                    color: white; font-size: 14px; font-weight: 600; letter-spacing: 0.3px;
+                }
+                .editor-header .dot { width: 8px; height: 8px; border-radius: 50%; }
+                .dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
+                #jsme_container { border-bottom: 1px solid #ccfbf1; }
+                .controls {
+                    padding: 14px 20px;
+                    display: flex; gap: 10px; align-items: center;
+                    background: #f0fdfa;
+                }
+                .btn {
+                    padding: 10px 22px;
+                    border: none; border-radius: 10px;
+                    font-size: 13px; font-weight: 600;
+                    cursor: pointer; transition: all 0.2s ease;
+                    font-family: 'Inter', sans-serif;
+                    letter-spacing: 0.2px;
+                }
+                .btn:active { transform: scale(0.97); }
+                .btn-primary {
+                    background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+                    color: white; box-shadow: 0 2px 8px rgba(20,184,166,0.35);
+                }
+                .btn-primary:hover { box-shadow: 0 4px 14px rgba(20,184,166,0.45); }
+                .btn-copy {
+                    background: white; color: #0f766e;
+                    border: 1.5px solid #14b8a6;
+                }
+                .btn-copy:hover { background: #f0fdfa; }
+                .btn-copy.copied { background: #f0fdf4; color: #16a34a; border-color: #16a34a; }
+                .smiles-out {
+                    flex: 1; padding: 10px 14px;
+                    border: 1.5px solid #ccfbf1; border-radius: 10px;
+                    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+                    font-size: 13px; color: #134e4a;
+                    background: white; outline: none;
+                    transition: border-color 0.2s ease;
+                }
+                .smiles-out:focus { border-color: #14b8a6; }
+                .smiles-out::placeholder { color: #5eead4; }
+            </style>
+        </head>
+        <body>
+            <div class="editor-wrap">
+                <div class="editor-header">
+                    <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                    <span>JSME Molecular Editor</span>
+                </div>
+                <div id="jsme_container"></div>
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="getSmiles()">Get SMILES</button>
+                    <input id="smilesOut" class="smiles-out" type="text" readonly
+                        placeholder="Draw a structure, then click Get SMILES">
+                    <button id="copyBtn" class="btn btn-copy" onclick="copySmiles()">Copy</button>
+                </div>
+            </div>
+            <script>
+                var jsmeApplet;
+                function jsmeOnLoad() {
+                    jsmeApplet = new JSApplet.JSME("jsme_container", "100%", "390px", {
+                        "options": "query,hydrogens"
+                    });
+                }
+                function getSmiles() {
+                    if (jsmeApplet) {
+                        var s = jsmeApplet.smiles();
+                        document.getElementById('smilesOut').value = s || '';
+                    }
+                }
+                function copySmiles() {
+                    var el = document.getElementById('smilesOut');
+                    var btn = document.getElementById('copyBtn');
+                    if (el.value) {
+                        navigator.clipboard.writeText(el.value);
+                        btn.textContent = 'Copied';
+                        btn.classList.add('copied');
+                        setTimeout(function(){
+                            btn.textContent = 'Copy';
+                            btn.classList.remove('copied');
+                        }, 2000);
+                    }
+                }
+            </script>
+        </body>
+        </html>
+        """
+        components.html(jsme_html, height=510)
+        st.caption("Draw your molecule above, click **Get SMILES**, then **Copy** and paste into the text input tab.")
 
     if predict_btn and user_input:
+        # Handle molfile input from Ketcher (some versions return molfile, not SMILES)
+        if "V2000" in user_input or "V3000" in user_input:
+            try:
+                mol_from_block = Chem.MolFromMolBlock(user_input)
+                if mol_from_block:
+                    user_input = Chem.MolToSmiles(mol_from_block)
+            except Exception:
+                pass
+
         # Resolve input
         with st.spinner("Looking up molecule..."):
             smiles = name_to_smiles(user_input)
