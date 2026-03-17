@@ -261,7 +261,7 @@ def main():
         - Batch processing
         - API access
 
-        Contact: nabilyasini@example.com
+        Contact: nabil@dis-solved.com
         """)
 
         st.markdown("---")
