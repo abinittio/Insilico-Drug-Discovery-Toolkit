@@ -1,6 +1,6 @@
 # Insilico Drug Discovery Toolkit
 
-[![CI](https://github.com/YOUR_USERNAME/Insilico-Drug-Discovery-Toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/Insilico-Drug-Discovery-Toolkit/actions/workflows/ci.yml)
+[![CI](https://github.com/abinittio/Insilico-Drug-Discovery-Toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/abinittio/Insilico-Drug-Discovery-Toolkit/actions/workflows/ci.yml)
 
 A multi-endpoint ADMET prediction platform built on stereo-aware graph neural networks. The toolkit predicts blood-brain barrier permeability, monoamine transporter activity, and ADMET properties from molecular SMILES strings, with explicit handling of stereochemistry that most competing tools ignore.
 
@@ -112,7 +112,7 @@ graph TD
 **Prerequisites:** Python 3.9+, pip
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/Insilico-Drug-Discovery-Toolkit.git
+git clone https://github.com/abinittio/Insilico-Drug-Discovery-Toolkit.git
 cd Insilico-Drug-Discovery-Toolkit
 
 # Create a virtual environment (recommended)
@@ -236,6 +236,6 @@ MIT
   title={Insilico Drug Discovery Toolkit: Stereo-Aware GNNs for ADMET Prediction},
   author={Yasini-Ardekani, N.},
   year={2025},
-  url={https://github.com/YOUR_USERNAME/Insilico-Drug-Discovery-Toolkit}
+  url={https://github.com/abinittio/Insilico-Drug-Discovery-Toolkit}
 }
 ```
