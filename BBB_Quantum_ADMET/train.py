@@ -11,6 +11,7 @@ Run: python train.py --mode pretrain
      python train.py --mode finetune
 """
 
+import logging
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -29,6 +30,8 @@ import pickle
 from config import MODEL_CONFIG, TRAINING_CONFIG, DATA_CONFIG
 from model import QuantumADMETModel, QuantumPretrainingModel, count_parameters
 from quantum_features import QuantumFeatureExtractor, batch_smiles_to_graphs
+
+logger = logging.getLogger(__name__)
 
 
 def pretrain_epoch(
@@ -202,25 +205,22 @@ def evaluate(
     return avg_loss, metrics
 
 
-def pretrain(args):
+def pretrain(args: argparse.Namespace) -> None:
     """Self-supervised pretraining on ZINC."""
-    print("=" * 70)
-    print("QUANTUM ADMET - SELF-SUPERVISED PRETRAINING")
-    print("=" * 70)
-    print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"Device: {TRAINING_CONFIG.device}")
-    print()
+    logger.info("QUANTUM ADMET - SELF-SUPERVISED PRETRAINING")
+    logger.info("Started: %s", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    logger.info("Device: %s", TRAINING_CONFIG.device)
 
     # Check for cached graphs
     cache_path = os.path.join(DATA_CONFIG.data_dir, 'zinc_quantum_graphs.pkl')
 
     if os.path.exists(cache_path) and not args.regenerate:
-        print(f"Loading cached graphs from {cache_path}...")
+        logger.info("Loading cached graphs from %s...", cache_path)
         with open(cache_path, 'rb') as f:
             graphs = pickle.load(f)
-        print(f"Loaded {len(graphs)} graphs")
+        logger.info("Loaded %d graphs", len(graphs))
     else:
-        print("Generating quantum graphs from ZINC...")
+        logger.info("Generating quantum graphs from ZINC...")
         # Load ZINC SMILES
         zinc_path = os.path.join(DATA_CONFIG.data_dir, 'zinc250k.csv')
 
@@ -228,11 +228,11 @@ def pretrain(args):
             df = pd.read_csv(zinc_path)
             smiles_list = df['smiles'].tolist()[:args.num_molecules]
         else:
-            print(f"ZINC file not found at {zinc_path}")
-            print("Please provide ZINC data or use --zinc-path")
+            logger.error("ZINC file not found at %s", zinc_path)
+            logger.error("Please provide ZINC data or use --zinc-path")
             return
 
-        print(f"Processing {len(smiles_list)} molecules...")
+        logger.info("Processing %d molecules...", len(smiles_list))
         graphs = batch_smiles_to_graphs(
             smiles_list,
             use_etkdg=args.use_etkdg,
@@ -249,7 +249,7 @@ def pretrain(args):
         os.makedirs(DATA_CONFIG.data_dir, exist_ok=True)
         with open(cache_path, 'wb') as f:
             pickle.dump(graphs, f)
-        print(f"Saved {len(graphs)} graphs to {cache_path}")
+        logger.info("Saved %d graphs to %s", len(graphs), cache_path)
 
     # Create data loader
     loader = DataLoader(
@@ -267,7 +267,7 @@ def pretrain(args):
         dropout=MODEL_CONFIG.dropout
     ).to(TRAINING_CONFIG.device)
 
-    print(f"Model parameters: {count_parameters(model):,}")
+    logger.info("Model parameters: %s", f"{count_parameters(model):,}")
 
     # Optimizer
     optimizer = optim.AdamW(
@@ -285,8 +285,7 @@ def pretrain(args):
     os.makedirs(DATA_CONFIG.checkpoint_dir, exist_ok=True)
     best_loss = float('inf')
 
-    print(f"\nTraining for {TRAINING_CONFIG.pretrain_epochs} epochs...")
-    print("-" * 60)
+    logger.info("Training for %d epochs...", TRAINING_CONFIG.pretrain_epochs)
 
     for epoch in range(1, TRAINING_CONFIG.pretrain_epochs + 1):
         loss = pretrain_epoch(model, loader, optimizer, TRAINING_CONFIG.device)
@@ -305,8 +304,9 @@ def pretrain(args):
                 os.path.join(DATA_CONFIG.model_dir, 'pretrained_quantum_encoder.pth')
             )
 
-        print(f"Epoch {epoch:3d}/{TRAINING_CONFIG.pretrain_epochs} | "
-              f"Loss: {loss:.6f} | LR: {scheduler.get_last_lr()[0]:.6f}{marker}")
+        logger.info("Epoch %3d/%d | Loss: %.6f | LR: %.6f%s",
+                     epoch, TRAINING_CONFIG.pretrain_epochs, loss,
+                     scheduler.get_last_lr()[0], marker)
         sys.stdout.flush()
 
         # Checkpoint every 5 epochs
@@ -316,33 +316,29 @@ def pretrain(args):
                 os.path.join(DATA_CONFIG.checkpoint_dir, f'pretrain_epoch_{epoch:03d}.pth')
             )
 
-    print("-" * 60)
-    print(f"Pretraining complete! Best loss: {best_loss:.6f}")
-    print(f"Encoder saved to: {DATA_CONFIG.model_dir}/pretrained_quantum_encoder.pth")
+    logger.info("Pretraining complete! Best loss: %.6f", best_loss)
+    logger.info("Encoder saved to: %s/pretrained_quantum_encoder.pth", DATA_CONFIG.model_dir)
 
 
-def finetune(args):
+def finetune(args: argparse.Namespace) -> None:
     """Fine-tune on ADMET endpoints."""
-    print("=" * 70)
-    print("QUANTUM ADMET - MULTI-TASK FINE-TUNING")
-    print("=" * 70)
-    print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"Device: {TRAINING_CONFIG.device}")
-    print()
+    logger.info("QUANTUM ADMET - MULTI-TASK FINE-TUNING")
+    logger.info("Started: %s", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    logger.info("Device: %s", TRAINING_CONFIG.device)
 
     # Load ADMET data
     admet_path = os.path.join(DATA_CONFIG.data_dir, 'admet_combined.csv')
 
     if not os.path.exists(admet_path):
-        print(f"ADMET data not found at {admet_path}")
-        print("Please prepare ADMET dataset first.")
+        logger.error("ADMET data not found at %s", admet_path)
+        logger.error("Please prepare ADMET dataset first.")
         return
 
     df = pd.read_csv(admet_path)
-    print(f"Loaded {len(df)} molecules with ADMET data")
+    logger.info("Loaded %d molecules with ADMET data", len(df))
 
     # Convert to graphs with targets
-    print("Converting to quantum graphs...")
+    logger.info("Converting to quantum graphs...")
     smiles_list = df['smiles'].tolist()
 
     targets_list = []
@@ -366,9 +362,7 @@ def finetune(args):
     all_fold_metrics = []
 
     for fold, (train_idx, val_idx) in enumerate(kfold.split(graphs)):
-        print("\n" + "=" * 60)
-        print(f"FOLD {fold + 1}/{TRAINING_CONFIG.n_folds}")
-        print("=" * 60)
+        logger.info("FOLD %d/%d", fold + 1, TRAINING_CONFIG.n_folds)
 
         train_graphs = [graphs[i] for i in train_idx]
         val_graphs = [graphs[i] for i in val_idx]
@@ -383,7 +377,7 @@ def finetune(args):
             batch_size=TRAINING_CONFIG.finetune_batch_size
         )
 
-        print(f"Train: {len(train_graphs)}, Val: {len(val_graphs)}")
+        logger.info("Train: %d, Val: %d", len(train_graphs), len(val_graphs))
 
         # Create model
         model = QuantumADMETModel(
@@ -398,7 +392,7 @@ def finetune(args):
         # Load pretrained encoder if available
         pretrained_path = os.path.join(DATA_CONFIG.model_dir, 'pretrained_quantum_encoder.pth')
         if os.path.exists(pretrained_path):
-            print(f"Loading pretrained encoder from {pretrained_path}")
+            logger.info("Loading pretrained encoder from %s", pretrained_path)
             model.encoder.load_state_dict(
                 torch.load(pretrained_path, map_location=TRAINING_CONFIG.device)
             )
@@ -450,13 +444,13 @@ def finetune(args):
                     f"{t[:4]}: {m['rmse']:.3f}"
                     for t, m in val_metrics.items()
                 ])
-                print(f"Epoch {epoch:3d} | Train: {train_loss:.4f} | "
-                      f"Val: {val_loss:.4f} | {metric_str}{marker}")
+                logger.info("Epoch %3d | Train: %.4f | Val: %.4f | %s%s",
+                            epoch, train_loss, val_loss, metric_str, marker)
                 sys.stdout.flush()
 
             # Early stopping
             if patience_counter >= TRAINING_CONFIG.early_stopping_patience:
-                print(f"Early stopping at epoch {epoch}")
+                logger.info("Early stopping at epoch %d", epoch)
                 break
 
         # Load best model and get final metrics
@@ -469,29 +463,28 @@ def finetune(args):
             TRAINING_CONFIG.task_weights, TRAINING_CONFIG.device
         )
 
-        print(f"\nFold {fold + 1} Final Results:")
+        logger.info("Fold %d Final Results:", fold + 1)
         for task, metrics in final_metrics.items():
-            print(f"  {task}: RMSE={metrics['rmse']:.4f}, R2={metrics['r2']:.4f}")
+            logger.info("  %s: RMSE=%.4f, R2=%.4f", task, metrics['rmse'], metrics['r2'])
 
         all_fold_metrics.append(final_metrics)
 
     # Summary
-    print("\n" + "=" * 70)
-    print("FINAL RESULTS (CROSS-VALIDATION)")
-    print("=" * 70)
+    logger.info("FINAL RESULTS (CROSS-VALIDATION)")
 
     for task in DATA_CONFIG.endpoints:
         rmses = [m[task]['rmse'] for m in all_fold_metrics if task in m]
         r2s = [m[task]['r2'] for m in all_fold_metrics if task in m]
 
         if rmses:
-            print(f"{task:10s}: RMSE = {np.mean(rmses):.4f} +/- {np.std(rmses):.4f} | "
-                  f"R2 = {np.mean(r2s):.4f} +/- {np.std(r2s):.4f}")
+            logger.info("%10s: RMSE = %.4f +/- %.4f | R2 = %.4f +/- %.4f",
+                        task, np.mean(rmses), np.std(rmses), np.mean(r2s), np.std(r2s))
 
-    print(f"\nCompleted: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    logger.info("Completed: %s", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
-def main():
+def main() -> None:
+    """Parse arguments and run training."""
     parser = argparse.ArgumentParser(description='Train Quantum ADMET Model')
     parser.add_argument('--mode', choices=['pretrain', 'finetune'], required=True,
                         help='Training mode')
@@ -519,4 +512,5 @@ def main():
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
     main()

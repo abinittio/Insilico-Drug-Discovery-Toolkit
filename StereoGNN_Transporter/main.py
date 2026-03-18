@@ -20,10 +20,13 @@ Success Criteria (MUST ACHIEVE):
 """
 
 import argparse
+import logging
 import sys
 from pathlib import Path
 
 import torch
+
+logger = logging.getLogger(__name__)
 
 from config import CONFIG
 from data_curation import DataCurationPipeline
@@ -37,24 +40,24 @@ from inference import TransporterPredictor, predict_single
 
 def train(args):
     """Train the StereoGNN model."""
-    print("=" * 70)
-    print("TRAINING STEREOGNN")
-    print("=" * 70)
+    logger.info("=" * 70)
+    logger.info("TRAINING STEREOGNN")
+    logger.info("=" * 70)
 
     # Step 1: Data curation
-    print("\n[1/4] Curating data...")
+    logger.info("\n[1/4] Curating data...")
     pipeline = DataCurationPipeline()
     splits = pipeline.run(use_cache=args.use_cache)
 
     for name, df in splits.items():
         stats = pipeline.get_statistics(df)
-        print(f"  {name}: {stats['total_compounds']} compounds")
+        logger.info(f"  {name}: {stats['total_compounds']} compounds")
         for target in ['DAT', 'NET', 'SERT']:
-            print(f"    {target}: {stats[f'{target}_substrates']} substrates, "
+            logger.info(f"    {target}: {stats[f'{target}_substrates']} substrates, "
                   f"{stats[f'{target}_blockers']} blockers")
 
     # Step 2: Create dataloaders
-    print("\n[2/4] Creating dataloaders...")
+    logger.info("\n[2/4] Creating dataloaders...")
     dataloaders = create_dataloaders(
         batch_size=args.batch_size,
         num_workers=args.num_workers,
@@ -62,18 +65,18 @@ def train(args):
     )
 
     if len(dataloaders['train'].dataset) == 0:
-        print("ERROR: No training data available!")
-        print("Please ensure ChEMBL data is accessible or add more literature data.")
+        logger.error("No training data available!")
+        logger.error("Please ensure ChEMBL data is accessible or add more literature data.")
         return
 
     # Step 3: Initialize model
-    print("\n[3/4] Initializing model...")
+    logger.info("\n[3/4] Initializing model...")
     model = StereoGNN()
     n_params = sum(p.numel() for p in model.parameters())
-    print(f"  Model parameters: {n_params:,}")
+    logger.info(f"  Model parameters: {n_params:,}")
 
     # Step 4: Train
-    print("\n[4/4] Training...")
+    logger.info("\n[4/4] Training...")
     trainer = Trainer(
         model=model,
         experiment_name=args.experiment_name,
@@ -87,9 +90,9 @@ def train(args):
     )
 
     # Evaluate on test set
-    print("\n" + "=" * 70)
-    print("FINAL EVALUATION")
-    print("=" * 70)
+    logger.info("\n" + "=" * 70)
+    logger.info("FINAL EVALUATION")
+    logger.info("=" * 70)
 
     evaluator = ModelEvaluator(model)
     results = evaluator.evaluate(dataloaders['test'])
@@ -98,28 +101,28 @@ def train(args):
     # Save results
     results_path = CONFIG.data.results_dir / f"{args.experiment_name}_results.json"
     evaluator.save_results(results, results_path)
-    print(f"\nResults saved to {results_path}")
+    logger.info(f"\nResults saved to {results_path}")
 
     # Check success criteria
-    print("\n" + "=" * 70)
+    logger.info("\n" + "=" * 70)
     if results.passes_criteria:
-        print("SUCCESS: ALL CRITERIA PASSED")
+        logger.info("SUCCESS: ALL CRITERIA PASSED")
     else:
-        print("FAILED: Some criteria not met")
+        logger.warning("FAILED: Some criteria not met")
         for criterion in results.failed_criteria:
-            print(f"  - {criterion}")
-    print("=" * 70)
+            logger.info(f"  - {criterion}")
+    logger.info("=" * 70)
 
 
 def evaluate(args):
     """Evaluate a trained model."""
-    print("=" * 70)
-    print("EVALUATING MODEL")
-    print("=" * 70)
+    logger.info("=" * 70)
+    logger.info("EVALUATING MODEL")
+    logger.info("=" * 70)
 
     model_path = CONFIG.data.models_dir / args.experiment_name / "best_model.pt"
     if not model_path.exists():
-        print(f"Model not found: {model_path}")
+        logger.error(f"Model not found: {model_path}")
         return
 
     # Create test dataloader
@@ -139,9 +142,9 @@ def evaluate(args):
 
 def ablation(args):
     """Run ablation study."""
-    print("=" * 70)
-    print("RUNNING ABLATION STUDY")
-    print("=" * 70)
+    logger.info("=" * 70)
+    logger.info("RUNNING ABLATION STUDY")
+    logger.info("=" * 70)
 
     # First ensure data is curated
     pipeline = DataCurationPipeline()
@@ -156,47 +159,47 @@ def ablation(args):
     )
     if stereo_abl:
         drop = -stereo_abl.auroc_delta
-        print(f"\n" + "=" * 70)
-        print(f"CRITICAL: Stereo feature ablation drop = {drop:.4f}")
+        logger.info(f"\n" + "=" * 70)
+        logger.info(f"CRITICAL: Stereo feature ablation drop = {drop:.4f}")
         if drop >= 0.05:
-            print("PASS: Stereochemistry features contribute >= 5% AUROC")
+            logger.info("PASS: Stereochemistry features contribute >= 5% AUROC")
         else:
-            print("WARN: Stereochemistry contribution < 5%")
-        print("=" * 70)
+            logger.warning("Stereochemistry contribution < 5%")
+        logger.info("=" * 70)
 
 
 def predict(args):
     """Predict a single molecule."""
-    print("=" * 70)
-    print("SINGLE MOLECULE PREDICTION")
-    print("=" * 70)
+    logger.info("=" * 70)
+    logger.info("SINGLE MOLECULE PREDICTION")
+    logger.info("=" * 70)
 
     model_path = CONFIG.data.models_dir / args.experiment_name / "best_model.pt"
 
     result = predict_single(args.smiles, model_path)
 
-    print(f"\nMolecule: {result['smiles']}")
-    print(f"Valid: {result['is_valid']}")
+    logger.info(f"\nMolecule: {result['smiles']}")
+    logger.info(f"Valid: {result['is_valid']}")
 
     if result['is_valid']:
-        print(f"\nPredictions:")
-        print(f"  DAT: {result['dat_prediction']:<10} (substrate prob: {result['dat_substrate_prob']:.3f})")
-        print(f"  NET: {result['net_prediction']:<10} (substrate prob: {result['net_substrate_prob']:.3f})")
-        print(f"  SERT: {result['sert_prediction']:<10} (substrate prob: {result['sert_substrate_prob']:.3f})")
+        logger.info(f"\nPredictions:")
+        logger.info(f"  DAT: {result['dat_prediction']:<10} (substrate prob: {result['dat_substrate_prob']:.3f})")
+        logger.info(f"  NET: {result['net_prediction']:<10} (substrate prob: {result['net_substrate_prob']:.3f})")
+        logger.info(f"  SERT: {result['sert_prediction']:<10} (substrate prob: {result['sert_substrate_prob']:.3f})")
 
-        print(f"\nApplicability Domain:")
-        print(f"  In domain: {result['in_domain']} (score: {result['domain_score']:.3f})")
+        logger.info(f"\nApplicability Domain:")
+        logger.info(f"  In domain: {result['in_domain']} (score: {result['domain_score']:.3f})")
 
-        print(f"\nStereochemistry:")
-        print(f"  Has stereocenters: {result['has_stereocenters']}")
-        print(f"  Number of stereocenters: {result['num_stereocenters']}")
+        logger.info(f"\nStereochemistry:")
+        logger.info(f"  Has stereocenters: {result['has_stereocenters']}")
+        logger.info(f"  Number of stereocenters: {result['num_stereocenters']}")
 
 
 def screen(args):
     """Run virtual screening."""
-    print("=" * 70)
-    print("VIRTUAL SCREENING")
-    print("=" * 70)
+    logger.info("=" * 70)
+    logger.info("VIRTUAL SCREENING")
+    logger.info("=" * 70)
 
     model_path = CONFIG.data.models_dir / args.experiment_name / "best_model.pt"
 
@@ -206,7 +209,7 @@ def screen(args):
     with open(args.input_file) as f:
         smiles_list = [line.strip() for line in f if line.strip()]
 
-    print(f"Loaded {len(smiles_list)} molecules")
+    logger.info(f"Loaded {len(smiles_list)} molecules")
 
     results = predictor.virtual_screen(
         smiles_list,
@@ -216,15 +219,17 @@ def screen(args):
 
     # Save results
     results.to_csv(args.output_file, index=False)
-    print(f"\nResults saved to {args.output_file}")
+    logger.info(f"\nResults saved to {args.output_file}")
 
     # Print top hits
-    print(f"\nTop 10 hits for {args.target}:")
+    logger.info(f"\nTop 10 hits for {args.target}:")
     for i, row in results.head(10).iterrows():
-        print(f"  {row['rank']:3d}. {row['smiles'][:40]:<40} prob={row['substrate_prob']:.3f}")
+        logger.info(f"  {row['rank']:3d}. {row['smiles'][:40]:<40} prob={row['substrate_prob']:.3f}")
 
 
-def main():
+def main() -> None:
+    """CLI entry point for StereoGNN pipeline."""
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
     parser = argparse.ArgumentParser(
         description="StereoGNN Transporter Substrate Predictor",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -316,12 +321,12 @@ Examples:
         ablation(args)
     elif args.mode == 'predict':
         if not args.smiles:
-            print("Error: --smiles required for predict mode")
+            logger.error("--smiles required for predict mode")
             sys.exit(1)
         predict(args)
     elif args.mode == 'screen':
         if not args.input_file:
-            print("Error: --input_file required for screen mode")
+            logger.error("--input_file required for screen mode")
             sys.exit(1)
         screen(args)
 

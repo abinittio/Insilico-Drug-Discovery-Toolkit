@@ -21,10 +21,13 @@ Usage:
 
 import argparse
 import json
+import logging
 import time
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Optional
+
+logger = logging.getLogger(__name__)
 
 import numpy as np
 import pandas as pd
@@ -433,25 +436,25 @@ class KineticTrainer:
     def train(self, num_epochs: int = None) -> Dict[str, float]:
         """Full training loop."""
         num_epochs = num_epochs or self.config.training.max_epochs
-        print(f"\nStarting training for {num_epochs} epochs")
-        print(f"Model parameters: {count_parameters(self.model):,}")
-        print(f"Device: {self.device}")
-        print(f"Save directory: {self.save_dir}")
+        logger.info(f"\nStarting training for {num_epochs} epochs")
+        logger.info(f"Model parameters: {count_parameters(self.model):,}")
+        logger.info(f"Device: {self.device}")
+        logger.info(f"Save directory: {self.save_dir}")
 
         for epoch in range(num_epochs):
-            print(f"\n{'='*60}")
-            print(f"Epoch {epoch + 1}/{num_epochs}")
-            print(f"{'='*60}")
+            logger.info(f"\n{'='*60}")
+            logger.info(f"Epoch {epoch + 1}/{num_epochs}")
+            logger.info(f"{'='*60}")
 
             # Train
             train_metrics = self.train_epoch()
-            print(f"Train loss: {train_metrics['loss']:.4f}")
+            logger.info(f"Train loss: {train_metrics['loss']:.4f}")
 
             # Validate
             val_metrics = self.validate()
-            print(f"Val loss: {val_metrics['loss']:.4f}")
+            logger.info(f"Val loss: {val_metrics['loss']:.4f}")
             if 'mean_auroc' in val_metrics:
-                print(f"Val AUROC: {val_metrics['mean_auroc']:.4f}")
+                logger.info(f"Val AUROC: {val_metrics['mean_auroc']:.4f}")
 
             # Update scheduler
             self.scheduler.step()
@@ -459,7 +462,7 @@ class KineticTrainer:
 
             # Log task weights
             task_weights = self.criterion.get_task_weights()
-            print(f"Task weights: {task_weights}")
+            logger.info(f"Task weights: {task_weights}")
 
             # Store history
             self.history['train_loss'].append(train_metrics['loss'])
@@ -486,7 +489,7 @@ class KineticTrainer:
                 self.best_val_auroc = val_auroc
                 self.best_epoch = epoch
                 self._save_checkpoint('best_model.pt', epoch, val_metrics)
-                print(f"New best model! AUROC: {val_auroc:.4f}")
+                logger.info(f"New best model! AUROC: {val_auroc:.4f}")
 
             # Save periodic checkpoint
             if (epoch + 1) % 10 == 0:
@@ -494,15 +497,15 @@ class KineticTrainer:
 
             # Early stopping
             if self.early_stopping(val_auroc):
-                print(f"\nEarly stopping triggered at epoch {epoch + 1}")
+                logger.info(f"\nEarly stopping triggered at epoch {epoch + 1}")
                 break
 
         # Save final model and training history
         self._save_checkpoint('final_model.pt', epoch, val_metrics)
         self._save_history()
 
-        print(f"\nTraining complete!")
-        print(f"Best AUROC: {self.best_val_auroc:.4f} at epoch {self.best_epoch + 1}")
+        logger.info(f"\nTraining complete!")
+        logger.info(f"Best AUROC: {self.best_val_auroc:.4f} at epoch {self.best_epoch + 1}")
 
         return {
             'best_auroc': self.best_val_auroc,
@@ -564,13 +567,13 @@ def main():
 
     args = parser.parse_args()
 
-    print("=" * 60)
-    print("StereoGNN Kinetic Model Training")
-    print("=" * 60)
+    logger.info("=" * 60)
+    logger.info("StereoGNN Kinetic Model Training")
+    logger.info("=" * 60)
 
     # Create model
     if args.from_pretrained:
-        print(f"\nLoading pretrained model from {args.from_pretrained}")
+        logger.info(f"\nLoading pretrained model from {args.from_pretrained}")
         checkpoint = torch.load(args.from_pretrained, map_location='cpu', weights_only=False)
         state_dict = checkpoint['model_state_dict']
 
@@ -581,7 +584,7 @@ def main():
             # Load directly as kinetic model
             model = StereoGNNKinetic()
             model.load_state_dict(state_dict)
-            print("Loaded full kinetic model from checkpoint")
+            logger.info("Loaded full kinetic model from checkpoint")
         else:
             # Load as base model and create kinetic model from it
             base_model = StereoGNN()
@@ -590,12 +593,12 @@ def main():
                 base_model,
                 freeze_backbone=args.freeze_backbone,
             )
-            print("Created kinetic model from pretrained base")
+            logger.info("Created kinetic model from pretrained base")
     else:
-        print("\nCreating new kinetic model (no pretraining)")
+        logger.info("\nCreating new kinetic model (no pretraining)")
         model = StereoGNNKinetic()
 
-    print(f"Model parameters: {count_parameters(model):,}")
+    logger.info(f"Model parameters: {count_parameters(model):,}")
 
     # Update config if needed
     if args.lr:
@@ -605,7 +608,7 @@ def main():
 
     # Create dataloaders
     data_path = Path(args.data_dir) if args.data_dir else CONFIG.data.data_dir
-    print(f"\nLoading data from {data_path}")
+    logger.info(f"\nLoading data from {data_path}")
 
     try:
         dataloaders = create_kinetic_dataloaders(
@@ -615,18 +618,18 @@ def main():
             use_3d=False,
             augment=True,
         )
-        print(f"Train samples: {len(dataloaders['train'].dataset)}")
-        print(f"Val samples: {len(dataloaders['val'].dataset)}")
+        logger.info(f"Train samples: {len(dataloaders['train'].dataset)}")
+        logger.info(f"Val samples: {len(dataloaders['val'].dataset)}")
     except Exception as e:
-        print(f"Error loading data: {e}")
-        print("\nNote: You need to prepare kinetic training data with columns:")
-        print("  - smiles: SMILES string")
-        print("  - target: DAT/NET/SERT")
-        print("  - label: Activity class (0=inactive, 1=blocker, 2=substrate)")
-        print("  - pKi: Binding affinity (optional)")
-        print("  - pIC50: Functional potency (optional)")
-        print("  - interaction_mode: 0-3 (optional)")
-        print("  - kinetic_bias: 0-1 (optional)")
+        logger.error(f"Error loading data: {e}")
+        logger.info("\nNote: You need to prepare kinetic training data with columns:")
+        logger.info("  - smiles: SMILES string")
+        logger.info("  - target: DAT/NET/SERT")
+        logger.info("  - label: Activity class (0=inactive, 1=blocker, 2=substrate)")
+        logger.info("  - pKi: Binding affinity (optional)")
+        logger.info("  - pIC50: Functional potency (optional)")
+        logger.info("  - interaction_mode: 0-3 (optional)")
+        logger.info("  - kinetic_bias: 0-1 (optional)")
         return
 
     # Create trainer
@@ -643,13 +646,14 @@ def main():
     num_epochs = args.epochs or CONFIG.training.max_epochs
     results = trainer.train(num_epochs=num_epochs)
 
-    print("\n" + "=" * 60)
-    print("Training Complete!")
-    print("=" * 60)
-    print(f"Best AUROC: {results['best_auroc']:.4f}")
-    print(f"Best epoch: {results['best_epoch'] + 1}")
-    print(f"Model saved to: {trainer.save_dir}")
+    logger.info("\n" + "=" * 60)
+    logger.info("Training Complete!")
+    logger.info("=" * 60)
+    logger.info(f"Best AUROC: {results['best_auroc']:.4f}")
+    logger.info(f"Best epoch: {results['best_epoch'] + 1}")
+    logger.info(f"Model saved to: {trainer.save_dir}")
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
     main()

@@ -10,9 +10,12 @@ Provides mechanistic insights into model predictions:
 5. Stereocentre attention analysis
 """
 
+import logging
 import numpy as np
 from typing import Dict, List, Optional, Tuple
 from collections import defaultdict
+
+logger = logging.getLogger(__name__)
 
 import torch
 import torch.nn.functional as F

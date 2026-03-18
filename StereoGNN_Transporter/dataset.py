@@ -6,9 +6,12 @@ Handles loading, preprocessing, and batching of molecular data
 for the StereoGNN model.
 """
 
+import logging
 import os
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Callable
+
+logger = logging.getLogger(__name__)
 
 import numpy as np
 import pandas as pd
@@ -100,7 +103,7 @@ class TransporterDataset(Dataset):
 
     def _pre_featurize(self):
         """Pre-compute features for all molecules."""
-        print(f"Pre-featurizing {len(self.molecules)} molecules for {self.split}...")
+        logger.info(f"Pre-featurizing {len(self.molecules)} molecules for {self.split}...")
 
         for smi in tqdm(self.molecules):
             labels = self.labels[smi]
@@ -108,7 +111,7 @@ class TransporterDataset(Dataset):
             if data is not None:
                 self.pre_featurized[smi] = data
 
-        print(f"Successfully featurized {len(self.pre_featurized)}/{len(self.molecules)}")
+        logger.info(f"Successfully featurized {len(self.pre_featurized)}/{len(self.molecules)}")
 
     def __len__(self) -> int:
         return len(self.molecules)
@@ -378,7 +381,7 @@ class KineticTransporterDataset(TransporterDataset):
 
                 self.pre_featurized[smi] = data
 
-        print(f"Successfully featurized {len(self.pre_featurized)}/{len(self.molecules)}")
+        logger.info(f"Successfully featurized {len(self.pre_featurized)}/{len(self.molecules)}")
 
     def __getitem__(self, idx: int) -> Data:
         smiles = self.molecules[idx]
@@ -649,9 +652,9 @@ def create_dataloaders(
 
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("Dataset Test")
-    print("=" * 60)
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
+
+    logger.info("Dataset Test")
 
     # Create test dataset
     from data_curation import DataCurationPipeline
@@ -667,19 +670,15 @@ if __name__ == "__main__":
         use_3d=False,
     )
 
-    print(f"\nDataset size: {len(dataset)}")
-    print(f"\nStatistics: {dataset.get_statistics()}")
-    print(f"\nClass weights: {dataset.get_class_weights()}")
+    logger.info(f"Dataset size: {len(dataset)}")
+    logger.info(f"Statistics: {dataset.get_statistics()}")
+    logger.info(f"Class weights: {dataset.get_class_weights()}")
 
     if len(dataset) > 0:
         # Test loading a sample
         sample = dataset[0]
-        print(f"\nSample:")
-        print(f"  Node features: {sample.x.shape}")
-        print(f"  Edge features: {sample.edge_attr.shape}")
-        print(f"  DAT label: {sample.y_dat}")
-        print(f"  NET label: {sample.y_net}")
-        print(f"  SERT label: {sample.y_sert}")
+        logger.info(f"Sample: Node features={sample.x.shape}, Edge features={sample.edge_attr.shape}")
+        logger.info(f"  DAT label: {sample.y_dat}, NET label: {sample.y_net}, SERT label: {sample.y_sert}")
 
         # Test dataloader
         dataloaders = create_dataloaders(
@@ -690,7 +689,5 @@ if __name__ == "__main__":
         )
 
         for batch in dataloaders['train']:
-            print(f"\nBatch:")
-            print(f"  Batch size: {batch.num_graphs}")
-            print(f"  Node features: {batch.x.shape}")
+            logger.info(f"Batch: size={batch.num_graphs}, Node features={batch.x.shape}")
             break

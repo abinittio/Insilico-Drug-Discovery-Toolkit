@@ -3,11 +3,12 @@ Quantum BBB Fine-tuning Script
 Binary classification using 34-dimensional quantum features
 
 Run AFTER pretraining completes.
-Target: Beat 0.8968 AUC (stereo-only baseline) → Push to 0.9+
+Target: Beat 0.8968 AUC (stereo-only baseline) -> Push to 0.9+
 
 Usage: python finetune_bbb.py
 """
 
+import logging
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -19,15 +20,18 @@ import pandas as pd
 import os
 import sys
 from datetime import datetime
+from typing import Optional, Tuple, List
 
 from model import QuantumAwareEncoder, count_parameters
 from quantum_features import QuantumFeatureExtractor
+
+logger = logging.getLogger(__name__)
 
 
 class BBBQuantumClassifier(nn.Module):
     """BBB classifier with quantum-aware encoder."""
 
-    def __init__(self, encoder, hidden_dim=256, freeze_encoder=False):
+    def __init__(self, encoder: QuantumAwareEncoder, hidden_dim: int = 256, freeze_encoder: bool = False):
         super().__init__()
         self.encoder = encoder
         self.freeze_encoder = freeze_encoder
@@ -48,7 +52,8 @@ class BBBQuantumClassifier(nn.Module):
             nn.Linear(hidden_dim // 2, 1)
         )
 
-    def forward(self, x, edge_index, batch):
+    def forward(self, x: torch.Tensor, edge_index: torch.Tensor, batch: torch.Tensor) -> torch.Tensor:
+        """Forward pass through encoder and classification head."""
         if self.freeze_encoder:
             with torch.no_grad():
                 graph_embed = self.encoder(x, edge_index, batch)
@@ -56,13 +61,14 @@ class BBBQuantumClassifier(nn.Module):
             graph_embed = self.encoder(x, edge_index, batch)
         return self.classifier(graph_embed)
 
-    def unfreeze_encoder(self):
+    def unfreeze_encoder(self) -> None:
+        """Unfreeze encoder parameters for fine-tuning."""
         self.freeze_encoder = False
         for param in self.encoder.parameters():
             param.requires_grad = True
 
 
-def load_bbb_data():
+def load_bbb_data() -> Tuple[Optional[List], Optional[np.ndarray]]:
     """Load BBB dataset and convert to quantum graphs."""
     # Try multiple paths
     bbb_paths = [
@@ -77,19 +83,19 @@ def load_bbb_data():
             break
 
     if bbb_path is None:
-        print("ERROR: BBBP dataset not found!")
-        print("Please copy bbbp_dataset.csv to data/ folder")
+        logger.error("BBBP dataset not found!")
+        logger.error("Please copy bbbp_dataset.csv to data/ folder")
         return None, None
 
-    print(f"Loading BBB data from {bbb_path}...")
+    logger.info("Loading BBB data from %s...", bbb_path)
     df = pd.read_csv(bbb_path)
-    print(f"  Total molecules: {len(df)}")
-    print(f"  BBB+ (permeable): {df['BBB_permeability'].sum()}")
-    print(f"  BBB- (non-permeable): {len(df) - df['BBB_permeability'].sum()}")
+    logger.info("  Total molecules: %d", len(df))
+    logger.info("  BBB+ (permeable): %d", df['BBB_permeability'].sum())
+    logger.info("  BBB- (non-permeable): %d", len(df) - df['BBB_permeability'].sum())
 
     # Convert to quantum graphs
-    print("\nConverting to quantum graphs (34 features)...")
-    print("Using ETKDG for 3D conformers...")
+    logger.info("Converting to quantum graphs (34 features)...")
+    logger.info("Using ETKDG for 3D conformers...")
     sys.stdout.flush()
 
     extractor = QuantumFeatureExtractor(use_etkdg=True)
@@ -109,14 +115,20 @@ def load_bbb_data():
             labels.append(label)
 
         if (idx + 1) % 500 == 0:
-            print(f"  Processed {idx+1}/{len(df)} ({len(graphs)} valid)")
+            logger.info("  Processed %d/%d (%d valid)", idx + 1, len(df), len(graphs))
             sys.stdout.flush()
 
-    print(f"Valid graphs: {len(graphs)}/{len(df)}")
+    logger.info("Valid graphs: %d/%d", len(graphs), len(df))
     return graphs, np.array(labels)
 
 
-def train_epoch(model, loader, optimizer, criterion, device):
+def train_epoch(
+    model: BBBQuantumClassifier,
+    loader: DataLoader,
+    optimizer: optim.Optimizer,
+    criterion: nn.Module,
+    device: str
+) -> Tuple[float, float]:
     """Train for one epoch."""
     model.train()
     total_loss = 0
@@ -142,8 +154,13 @@ def train_epoch(model, loader, optimizer, criterion, device):
     return total_loss / len(loader), auc
 
 
-def evaluate(model, loader, criterion, device):
-    """Evaluate model."""
+def evaluate(
+    model: BBBQuantumClassifier,
+    loader: DataLoader,
+    criterion: nn.Module,
+    device: str
+) -> Tuple[float, float, float, List[float], List[float]]:
+    """Evaluate model on a data loader."""
     model.eval()
     total_loss = 0
     all_preds = []
@@ -166,12 +183,11 @@ def evaluate(model, loader, criterion, device):
     return total_loss / len(loader), auc, acc, all_preds, all_labels
 
 
-def main():
-    print("=" * 70)
-    print("QUANTUM BBB FINE-TUNING")
-    print("34-dimensional features | Target: Beat 0.8968 AUC")
-    print("=" * 70)
-    print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+def main() -> None:
+    """Run BBB fine-tuning with cross-validation."""
+    logger.info("QUANTUM BBB FINE-TUNING")
+    logger.info("34-dimensional features | Target: Beat 0.8968 AUC")
+    logger.info("Started: %s", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
     # Config
     DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -183,25 +199,22 @@ def main():
     LR_FINETUNE = 0.0001
     N_FOLDS = 5
 
-    print(f"Device: {DEVICE}")
-    print(f"Training: {EPOCHS_FROZEN} frozen + {EPOCHS_FINETUNE} fine-tune epochs")
-    print()
+    logger.info("Device: %s", DEVICE)
+    logger.info("Training: %d frozen + %d fine-tune epochs", EPOCHS_FROZEN, EPOCHS_FINETUNE)
 
     # Check for pretrained encoder
     if not os.path.exists(PRETRAINED_PATH):
-        print(f"WARNING: Pretrained encoder not found at {PRETRAINED_PATH}")
-        print("Training from scratch (results may be worse)")
+        logger.warning("Pretrained encoder not found at %s", PRETRAINED_PATH)
+        logger.warning("Training from scratch (results may be worse)")
         use_pretrained = False
     else:
         use_pretrained = True
-        print(f"Using pretrained encoder: {PRETRAINED_PATH}")
+        logger.info("Using pretrained encoder: %s", PRETRAINED_PATH)
 
     # Load BBB data
     graphs, labels = load_bbb_data()
     if graphs is None:
         return
-
-    print()
 
     # 5-fold cross-validation
     kfold = StratifiedKFold(n_splits=N_FOLDS, shuffle=True, random_state=42)
@@ -210,9 +223,7 @@ def main():
     all_fold_accs = []
 
     for fold, (train_idx, val_idx) in enumerate(kfold.split(graphs, labels)):
-        print("=" * 60)
-        print(f"FOLD {fold + 1}/{N_FOLDS}")
-        print("=" * 60)
+        logger.info("FOLD %d/%d", fold + 1, N_FOLDS)
 
         train_graphs = [graphs[i] for i in train_idx]
         val_graphs = [graphs[i] for i in val_idx]
@@ -220,7 +231,7 @@ def main():
         train_loader = DataLoader(train_graphs, batch_size=BATCH_SIZE, shuffle=True)
         val_loader = DataLoader(val_graphs, batch_size=BATCH_SIZE)
 
-        print(f"Train: {len(train_graphs)}, Val: {len(val_graphs)}")
+        logger.info("Train: %d, Val: %d", len(train_graphs), len(val_graphs))
 
         # Create encoder
         encoder = QuantumAwareEncoder(
@@ -234,7 +245,7 @@ def main():
         # Load pretrained weights
         if use_pretrained:
             encoder.load_state_dict(torch.load(PRETRAINED_PATH, map_location=DEVICE))
-            print("Loaded pretrained encoder weights")
+            logger.info("Loaded pretrained encoder weights")
 
         # Create classifier
         model = BBBQuantumClassifier(encoder, hidden_dim=256, freeze_encoder=True).to(DEVICE)
@@ -244,7 +255,7 @@ def main():
         best_epoch = 0
 
         # Phase 1: Train with frozen encoder
-        print(f"\nPhase 1: Training classifier (encoder frozen)...")
+        logger.info("Phase 1: Training classifier (encoder frozen)...")
         optimizer = optim.AdamW(
             filter(lambda p: p.requires_grad, model.parameters()),
             lr=LR_FROZEN,
@@ -265,11 +276,12 @@ def main():
                 torch.save(model.state_dict(), f'models/bbb_quantum_fold{fold+1}_best.pth')
 
             if epoch % 5 == 0 or marker:
-                print(f"  Epoch {epoch:2d} | Train AUC: {train_auc:.4f} | Val AUC: {val_auc:.4f} | Acc: {val_acc:.4f}{marker}")
+                logger.info("  Epoch %2d | Train AUC: %.4f | Val AUC: %.4f | Acc: %.4f%s",
+                            epoch, train_auc, val_auc, val_acc, marker)
             sys.stdout.flush()
 
         # Phase 2: Fine-tune entire model
-        print(f"\nPhase 2: Fine-tuning entire model...")
+        logger.info("Phase 2: Fine-tuning entire model...")
         model.unfreeze_encoder()
 
         optimizer = optim.AdamW(model.parameters(), lr=LR_FINETUNE, weight_decay=1e-5)
@@ -288,7 +300,8 @@ def main():
                 torch.save(model.state_dict(), f'models/bbb_quantum_fold{fold+1}_best.pth')
 
             if epoch % 5 == 0 or marker:
-                print(f"  Epoch {epoch:2d} | Train AUC: {train_auc:.4f} | Val AUC: {val_auc:.4f} | Acc: {val_acc:.4f}{marker}")
+                logger.info("  Epoch %2d | Train AUC: %.4f | Val AUC: %.4f | Acc: %.4f%s",
+                            epoch, train_auc, val_auc, val_acc, marker)
             sys.stdout.flush()
 
         # Load best and evaluate
@@ -303,47 +316,41 @@ def main():
         recall = recall_score(true_labels, preds_binary)
         f1 = f1_score(true_labels, preds_binary)
 
-        print(f"\nFold {fold+1} Results (Best @ Epoch {best_epoch}):")
-        print(f"  AUC:       {final_auc:.4f}")
-        print(f"  Accuracy:  {final_acc:.4f}")
-        print(f"  Precision: {precision:.4f}")
-        print(f"  Recall:    {recall:.4f}")
-        print(f"  F1:        {f1:.4f}")
-        print()
+        logger.info("Fold %d Results (Best @ Epoch %d):", fold + 1, best_epoch)
+        logger.info("  AUC:       %.4f", final_auc)
+        logger.info("  Accuracy:  %.4f", final_acc)
+        logger.info("  Precision: %.4f", precision)
+        logger.info("  Recall:    %.4f", recall)
+        logger.info("  F1:        %.4f", f1)
 
     # Final summary
-    print("=" * 70)
-    print("FINAL RESULTS (5-FOLD CROSS-VALIDATION)")
-    print("=" * 70)
-    print(f"Mean AUC:      {np.mean(all_fold_aucs):.4f} +/- {np.std(all_fold_aucs):.4f}")
-    print(f"Mean Accuracy: {np.mean(all_fold_accs):.4f} +/- {np.std(all_fold_accs):.4f}")
-    print()
-    print(f"Per-fold AUCs: {[f'{auc:.4f}' for auc in all_fold_aucs]}")
-    print()
+    logger.info("FINAL RESULTS (5-FOLD CROSS-VALIDATION)")
+    logger.info("Mean AUC:      %.4f +/- %.4f", np.mean(all_fold_aucs), np.std(all_fold_aucs))
+    logger.info("Mean Accuracy: %.4f +/- %.4f", np.mean(all_fold_accs), np.std(all_fold_accs))
+    logger.info("Per-fold AUCs: %s", [f'{auc:.4f}' for auc in all_fold_aucs])
 
     # Compare to baselines
     STEREO_BASELINE = 0.8968
     mean_auc = np.mean(all_fold_aucs)
 
-    print("-" * 40)
-    print("COMPARISON TO BASELINES")
-    print("-" * 40)
-    print(f"Stereo-only baseline (21 features): 0.8968")
-    print(f"Quantum model (34 features):        {mean_auc:.4f}")
+    logger.info("COMPARISON TO BASELINES")
+    logger.info("Stereo-only baseline (21 features): 0.8968")
+    logger.info("Quantum model (34 features):        %.4f", mean_auc)
 
     if mean_auc > STEREO_BASELINE:
         improvement = (mean_auc - STEREO_BASELINE) * 100
-        print(f"\nSUCCESS! Beat stereo baseline by {improvement:.2f}%")
+        logger.info("SUCCESS! Beat stereo baseline by %.2f%%", improvement)
     else:
         diff = (STEREO_BASELINE - mean_auc) * 100
-        print(f"\nDid not beat stereo baseline (diff: -{diff:.2f}%)")
+        logger.info("Did not beat stereo baseline (diff: -%.2f%%)", diff)
 
     if mean_auc >= 0.9:
-        print("ACHIEVED 0.9+ AUC TARGET!")
+        logger.info("ACHIEVED 0.9+ AUC TARGET!")
 
-    print(f"\nCompleted: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print("Models saved: models/bbb_quantum_fold*_best.pth")
+    logger.info("Completed: %s", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    logger.info("Models saved: models/bbb_quantum_fold*_best.pth")
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
     main()

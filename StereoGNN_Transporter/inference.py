@@ -11,10 +11,13 @@ Production-ready inference for:
 """
 
 import json
+import logging
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 from dataclasses import dataclass, asdict
 from concurrent.futures import ThreadPoolExecutor
+
+logger = logging.getLogger(__name__)
 
 import numpy as np
 import pandas as pd
@@ -184,9 +187,9 @@ class TransporterPredictor:
         if model_path and model_path.exists():
             checkpoint = torch.load(model_path, map_location=self.device)
             self.model.load_state_dict(checkpoint['model_state_dict'])
-            print(f"Loaded model from {model_path}")
+            logger.info(f"Loaded model from {model_path}")
         else:
-            print("Warning: No model loaded, using randomly initialized weights")
+            logger.warning("No model loaded, using randomly initialized weights")
 
         self.model.eval()
 
@@ -320,7 +323,7 @@ class TransporterPredictor:
         Returns:
             DataFrame with ranked compounds
         """
-        print(f"Screening {len(smiles_list)} compounds for {target}...")
+        logger.info(f"Screening {len(smiles_list)} compounds for {target}...")
 
         predictions = self.predict_batch(smiles_list)
 
@@ -357,7 +360,7 @@ class TransporterPredictor:
         # Add rank
         df['rank'] = range(1, len(df) + 1)
 
-        print(f"Found {len(df)} potential substrates (prob >= {min_substrate_prob})")
+        logger.info(f"Found {len(df)} potential substrates (prob >= {min_substrate_prob})")
 
         return df
 
@@ -504,7 +507,7 @@ class VirtualScreeningPipeline:
         else:
             raise ValueError(f"Unsupported file format: {input_file}")
 
-        print(f"Loaded {len(smiles_list)} molecules from {input_file}")
+        logger.info(f"Loaded {len(smiles_list)} molecules from {input_file}")
 
         # Screen
         results = self.predictor.virtual_screen(smiles_list, target=target)
@@ -515,7 +518,7 @@ class VirtualScreeningPipeline:
 
         # Save
         results.to_csv(output_file, index=False)
-        print(f"Saved results to {output_file}")
+        logger.info(f"Saved results to {output_file}")
 
         return results
 
@@ -651,9 +654,9 @@ class KineticTransporterPredictor:
         if model_path and model_path.exists():
             checkpoint = torch.load(model_path, map_location=self.device)
             self.model.load_state_dict(checkpoint['model_state_dict'])
-            print(f"Loaded kinetic model from {model_path}")
+            logger.info(f"Loaded kinetic model from {model_path}")
         else:
-            print("Warning: No model loaded, using randomly initialized weights")
+            logger.warning("No model loaded, using randomly initialized weights")
 
         self.model.eval()
 
@@ -973,39 +976,38 @@ def predict_kinetics(smiles: str, model_path: Optional[Path] = None) -> Dict:
 
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("Inference API Test")
-    print("=" * 60)
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
+
+    logger.info("Inference API Test")
 
     # Create predictor (no trained model, just testing API)
     predictor = TransporterPredictor(use_uncertainty=False)
 
     # Test single prediction
     test_smiles = "C[C@H](N)Cc1ccccc1"  # d-Amphetamine
-    print(f"\nPredicting: {test_smiles}")
+    logger.info(f"Predicting: {test_smiles}")
     result = predictor.predict(test_smiles)
 
-    print(f"\nResult:")
-    print(f"  Valid: {result.is_valid}")
-    print(f"  DAT prediction: {result.dat_prediction} ({result.dat_substrate_prob:.3f})")
-    print(f"  NET prediction: {result.net_prediction} ({result.net_substrate_prob:.3f})")
-    print(f"  SERT prediction: {result.sert_prediction} ({result.sert_substrate_prob:.3f})")
-    print(f"  In domain: {result.in_domain} (score: {result.domain_score:.3f})")
-    print(f"  Stereocenters: {result.num_stereocenters}")
+    logger.info(f"Result: Valid={result.is_valid}")
+    logger.info(f"  DAT prediction: {result.dat_prediction} ({result.dat_substrate_prob:.3f})")
+    logger.info(f"  NET prediction: {result.net_prediction} ({result.net_substrate_prob:.3f})")
+    logger.info(f"  SERT prediction: {result.sert_prediction} ({result.sert_substrate_prob:.3f})")
+    logger.info(f"  In domain: {result.in_domain} (score: {result.domain_score:.3f})")
+    logger.info(f"  Stereocenters: {result.num_stereocenters}")
 
     # Test enantiomer comparison
-    print("\nComparing enantiomers:")
+    logger.info("Comparing enantiomers:")
     comparison = predictor.compare_enantiomers(
         "C[C@H](N)Cc1ccccc1",  # d-Amphetamine
         "C[C@@H](N)Cc1ccccc1",  # l-Amphetamine
         target="DAT",
     )
-    print(f"  d-Amph prob: {comparison['prob1']:.3f}")
-    print(f"  l-Amph prob: {comparison['prob2']:.3f}")
-    print(f"  Ratio: {comparison['ratio']:.2f}x")
+    logger.info(f"  d-Amph prob: {comparison['prob1']:.3f}")
+    logger.info(f"  l-Amph prob: {comparison['prob2']:.3f}")
+    logger.info(f"  Ratio: {comparison['ratio']:.2f}x")
 
     # Test batch prediction
-    print("\nBatch prediction:")
+    logger.info("Batch prediction:")
     test_batch = [
         "C[C@H](N)Cc1ccccc1",     # d-Amphetamine
         "C[C@H](NC)Cc1ccccc1",    # d-Methamphetamine
@@ -1014,4 +1016,4 @@ if __name__ == "__main__":
     ]
     results = predictor.predict_batch(test_batch, show_progress=False)
     for r in results:
-        print(f"  {r.smiles[:30]:<30} DAT: {r.dat_substrate_prob:.3f}")
+        logger.info(f"  {r.smiles[:30]:<30} DAT: {r.dat_substrate_prob:.3f}")

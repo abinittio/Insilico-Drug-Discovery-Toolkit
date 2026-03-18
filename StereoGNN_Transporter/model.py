@@ -20,10 +20,13 @@ Architecture:
 - Task-specific prediction heads
 """
 
+import logging
 import math
 from typing import Dict, List, Optional, Tuple
 
 import torch
+
+logger = logging.getLogger(__name__)
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
@@ -1063,13 +1066,13 @@ class StereoGNNKinetic(StereoGNN):
 
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("StereoGNN Model Test")
-    print("=" * 60)
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
+
+    logger.info("StereoGNN Model Test")
 
     # Create model
     model = StereoGNN()
-    print(f"Total parameters: {count_parameters(model):,}")
+    logger.info(f"Total parameters: {count_parameters(model):,}")
 
     # Create dummy data
     from featurizer import MoleculeGraphFeaturizer
@@ -1085,28 +1088,27 @@ if __name__ == "__main__":
 
     # Batch
     batch = Batch.from_data_list(data_list)
-    print(f"\nBatch: {batch}")
-    print(f"Node features shape: {batch.x.shape}")
-    print(f"Edge features shape: {batch.edge_attr.shape}")
+    logger.info(f"Batch: {batch}")
+    logger.info(f"Node features shape: {batch.x.shape}")
+    logger.info(f"Edge features shape: {batch.edge_attr.shape}")
 
     # Forward pass
     model.eval()
     with torch.no_grad():
         output = model(batch, return_attention=True)
 
-    print("\nOutput shapes:")
+    logger.info("Output shapes:")
     for key, val in output.items():
         if isinstance(val, Tensor):
-            print(f"  {key}: {val.shape}")
+            logger.info(f"  {key}: {val.shape}")
 
     # Test uncertainty estimation
-    print("\nUncertainty estimation:")
+    logger.info("Uncertainty estimation:")
     uncertainty = model.predict_with_uncertainty(batch, n_samples=10)
     for task, result in uncertainty.items():
-        print(f"  {task}: mean={result['mean'].shape}, std={result['std'].shape}")
+        logger.info(f"  {task}: mean={result['mean'].shape}, std={result['std'].shape}")
 
     # Ablation model
-    print("\n" + "=" * 60)
-    print("Ablation Model (no stereo features)")
+    logger.info("Ablation Model (no stereo features)")
     ablation_model = StereoGNNForAblation()
-    print(f"Ablation parameters: {count_parameters(ablation_model):,}")
+    logger.info(f"Ablation parameters: {count_parameters(ablation_model):,}")

@@ -12,10 +12,13 @@ Usage:
 
 import argparse
 import json
+import logging
 import time
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Optional
+
+logger = logging.getLogger(__name__)
 
 import numpy as np
 import pandas as pd
@@ -170,22 +173,22 @@ def main():
 
     args = parser.parse_args()
 
-    print("=" * 60)
-    print("Unified Kinetic Training")
-    print("=" * 60)
+    logger.info("=" * 60)
+    logger.info("Unified Kinetic Training")
+    logger.info("=" * 60)
 
     # Device
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    print(f"Device: {device}")
+    logger.info(f"Device: {device}")
 
     # Create model
-    print("\nCreating StereoGNNKinetic model...")
+    logger.info("\nCreating StereoGNNKinetic model...")
     model = StereoGNNKinetic()
     model = model.to(device)
-    print(f"Parameters: {count_parameters(model):,}")
+    logger.info(f"Parameters: {count_parameters(model):,}")
 
     # Load data
-    print(f"\nLoading data from {args.data_dir}")
+    logger.info(f"\nLoading data from {args.data_dir}")
     data_path = Path(args.data_dir)
 
     dataloaders = create_kinetic_dataloaders(
@@ -196,9 +199,9 @@ def main():
         augment=True,
     )
 
-    print(f"Train batches: {len(dataloaders['train'])}")
-    print(f"Val batches: {len(dataloaders['val'])}")
-    print(f"Test batches: {len(dataloaders['test'])}")
+    logger.info(f"Train batches: {len(dataloaders['train'])}")
+    logger.info(f"Val batches: {len(dataloaders['val'])}")
+    logger.info(f"Test batches: {len(dataloaders['test'])}")
 
     # Output directory
     output_dir = Path(args.output_dir)
@@ -213,14 +216,14 @@ def main():
     # =========================================================================
     # TRAINING (All Available Labels - Masked Multi-Task)
     # =========================================================================
-    print("\n" + "=" * 60)
-    print("TRAINING (Masked Multi-Task on All Available Labels)")
-    print("=" * 60)
-    print("  - Classification (activity labels)")
-    print("  - pKi (where available)")
-    print("  - pIC50 (where available)")
-    print("  - Interaction mode (where available)")
-    print("  - Kinetic bias (where available)")
+    logger.info("\n" + "=" * 60)
+    logger.info("TRAINING (Masked Multi-Task on All Available Labels)")
+    logger.info("=" * 60)
+    logger.info("  - Classification (activity labels)")
+    logger.info("  - pKi (where available)")
+    logger.info("  - pIC50 (where available)")
+    logger.info("  - Interaction mode (where available)")
+    logger.info("  - Kinetic bias (where available)")
 
     total_epochs = args.epochs
     optimizer = optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-5)
@@ -231,16 +234,16 @@ def main():
     no_improve = 0
 
     for epoch in range(1, total_epochs + 1):
-        print(f"\nEpoch {epoch}/{total_epochs}")
+        logger.info(f"\nEpoch {epoch}/{total_epochs}")
 
         train_loss = train_epoch(model, dataloaders['train'], optimizer, loss_fn, device, phase='full')
         val_loss, val_auc, val_aucs = evaluate(model, dataloaders['val'], loss_fn, device, phase='full')
         scheduler.step()
 
-        print(f"  Train Loss: {train_loss:.4f}")
-        print(f"  Val Loss: {val_loss:.4f} | Val AUC: {val_auc:.4f}")
+        logger.info(f"  Train Loss: {train_loss:.4f}")
+        logger.info(f"  Val Loss: {val_loss:.4f} | Val AUC: {val_auc:.4f}")
         if val_aucs:
-            print(f"  Per-target: {' | '.join(f'{k}: {v:.4f}' for k, v in val_aucs.items())}")
+            logger.info(f"  Per-target: {' | '.join(f'{k}: {v:.4f}' for k, v in val_aucs.items())}")
 
         if val_auc > best_auc:
             best_auc = val_auc
@@ -259,19 +262,19 @@ def main():
                 'model_state_dict': model.state_dict(),
                 'val_auc': val_auc,
             }, output_dir / 'best_kinetic_model.pt')
-            print(f"  -> Saved best model (AUC: {val_auc:.4f})")
+            logger.info(f"  -> Saved best model (AUC: {val_auc:.4f})")
         else:
             no_improve += 1
             if no_improve >= patience:
-                print(f"  Early stopping after {patience} epochs without improvement")
+                logger.info(f"  Early stopping after {patience} epochs without improvement")
                 break
 
     # =========================================================================
     # FINAL EVALUATION
     # =========================================================================
-    print("\n" + "=" * 60)
-    print("FINAL EVALUATION")
-    print("=" * 60)
+    logger.info("\n" + "=" * 60)
+    logger.info("FINAL EVALUATION")
+    logger.info("=" * 60)
 
     # Load best model
     checkpoint = torch.load(output_dir / 'best_kinetic_model.pt', map_location=device, weights_only=False)
@@ -279,11 +282,11 @@ def main():
 
     test_loss, test_auc, test_aucs = evaluate(model, dataloaders['test'], loss_fn, device, phase='full')
 
-    print(f"\nTest Results:")
-    print(f"  Loss: {test_loss:.4f}")
-    print(f"  Mean AUC: {test_auc:.4f}")
+    logger.info(f"\nTest Results:")
+    logger.info(f"  Loss: {test_loss:.4f}")
+    logger.info(f"  Mean AUC: {test_auc:.4f}")
     for target, auc in test_aucs.items():
-        print(f"  {target} AUC: {auc:.4f}")
+        logger.info(f"  {target} AUC: {auc:.4f}")
 
     # Save results
     results = {
@@ -296,11 +299,12 @@ def main():
     with open(output_dir / f'kinetic_results_{timestamp}.json', 'w') as f:
         json.dump(results, f, indent=2)
 
-    print("\n" + "=" * 60)
-    print("TRAINING COMPLETE")
-    print(f"Best model saved to: {output_dir / 'best_kinetic_model.pt'}")
-    print("=" * 60)
+    logger.info("\n" + "=" * 60)
+    logger.info("TRAINING COMPLETE")
+    logger.info(f"Best model saved to: {output_dir / 'best_kinetic_model.pt'}")
+    logger.info("=" * 60)
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
     main()

@@ -18,12 +18,15 @@ Usage:
     python train_kinetic.py --test-run
 """
 
+import logging
 import os
 import sys
 import argparse
 import time
 from datetime import datetime
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 import torch
 import torch.nn as nn
@@ -111,32 +114,32 @@ def get_device(device_arg: str) -> torch.device:
     if device_arg == 'auto':
         if torch.cuda.is_available():
             device = torch.device('cuda')
-            print(f"Using GPU: {torch.cuda.get_device_name(0)}")
+            logger.info(f"Using GPU: {torch.cuda.get_device_name(0)}")
         else:
             device = torch.device('cpu')
-            print("Using CPU (no GPU detected)")
+            logger.info("Using CPU (no GPU detected)")
     else:
         device = torch.device(device_arg)
-        print(f"Using device: {device}")
+        logger.info(f"Using device: {device}")
     return device
 
 
 def load_data(data_dir: str, batch_size: int):
     """Load training, validation and test data."""
-    print("\n" + "=" * 50)
-    print("Loading Data")
-    print("=" * 50)
+    logger.info("\n" + "=" * 50)
+    logger.info("Loading Data")
+    logger.info("=" * 50)
 
     data_path = Path(data_dir)
 
     # Check for training data
     train_file = data_path / 'train.parquet'
     if not train_file.exists():
-        print(f"ERROR: Training data not found at {train_file}")
-        print("Please run data curation first: python data_curation_kinetic.py")
+        logger.error(f"Training data not found at {train_file}")
+        logger.error("Please run data curation first: python data_curation_kinetic.py")
         sys.exit(1)
 
-    print(f"Loading from {data_path}")
+    logger.info(f"Loading from {data_path}")
 
     # Create featurizer
     featurizer = MoleculeGraphFeaturizer(use_3d=False)
@@ -166,11 +169,11 @@ def load_data(data_dir: str, batch_size: int):
         use_3d=False,
     ) if (data_path / 'test.parquet').exists() else None
 
-    print(f"  Train samples: {len(train_dataset)}")
+    logger.info(f"  Train samples: {len(train_dataset)}")
     if val_dataset:
-        print(f"  Val samples: {len(val_dataset)}")
+        logger.info(f"  Val samples: {len(val_dataset)}")
     if test_dataset:
-        print(f"  Test samples: {len(test_dataset)}")
+        logger.info(f"  Test samples: {len(test_dataset)}")
 
     # Create dataloaders
     from torch_geometric.loader import DataLoader
@@ -262,16 +265,16 @@ def main():
     # Handle test run
     if args.test_run:
         args.epochs = 3
-        print("\n*** TEST RUN MODE (3 epochs) ***\n")
+        logger.info("\n*** TEST RUN MODE (3 epochs) ***\n")
 
-    print("=" * 50)
-    print("StereoGNN Kinetic Model Training")
-    print("=" * 50)
-    print(f"Start time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"Epochs: {args.epochs}")
-    print(f"Batch size: {args.batch_size}")
-    print(f"Learning rate: {args.lr}")
-    print(f"Patience: {args.patience}")
+    logger.info("=" * 50)
+    logger.info("StereoGNN Kinetic Model Training")
+    logger.info("=" * 50)
+    logger.info(f"Start time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    logger.info(f"Epochs: {args.epochs}")
+    logger.info(f"Batch size: {args.batch_size}")
+    logger.info(f"Learning rate: {args.lr}")
+    logger.info(f"Patience: {args.patience}")
 
     # Setup device
     device = get_device(args.device)
@@ -280,15 +283,15 @@ def main():
     train_loader, val_loader, test_loader = load_data(args.data_dir, args.batch_size)
 
     # Create model
-    print("\n" + "=" * 50)
-    print("Creating Model")
-    print("=" * 50)
+    logger.info("\n" + "=" * 50)
+    logger.info("Creating Model")
+    logger.info("=" * 50)
 
     model = StereoGNNKinetic(config=CONFIG.model)
     model = model.to(device)
 
     num_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    print(f"  Model parameters: {num_params:,}")
+    logger.info(f"  Model parameters: {num_params:,}")
 
     # Create optimizer and scheduler
     optimizer = optim.AdamW(
@@ -316,9 +319,9 @@ def main():
     save_dir.mkdir(parents=True, exist_ok=True)
 
     # Training loop
-    print("\n" + "=" * 50)
-    print("Training")
-    print("=" * 50)
+    logger.info("\n" + "=" * 50)
+    logger.info("Training")
+    logger.info("=" * 50)
 
     best_val_loss = float('inf')
     best_epoch = 0
@@ -341,7 +344,7 @@ def main():
 
         # Print progress
         lr = optimizer.param_groups[0]['lr']
-        print(f"Epoch {epoch:3d}/{args.epochs} | "
+        logger.info(f"Epoch {epoch:3d}/{args.epochs} | "
               f"Train: {train_loss:.4f} | "
               f"Val: {val_loss:.4f} | "
               f"LR: {lr:.2e} | "
@@ -358,28 +361,28 @@ def main():
                 'val_loss': val_loss,
                 'train_loss': train_loss,
             }, save_dir / 'best_kinetic_model.pt')
-            print(f"  --> Saved best model (val_loss: {val_loss:.4f})")
+            logger.info(f"  --> Saved best model (val_loss: {val_loss:.4f})")
 
         # Early stopping
         if early_stopping(val_loss):
-            print(f"\nEarly stopping at epoch {epoch}")
+            logger.info(f"\nEarly stopping at epoch {epoch}")
             break
 
     # Training complete
     total_time = time.time() - training_start
-    print("\n" + "=" * 50)
-    print("Training Complete!")
-    print("=" * 50)
-    print(f"Total time: {total_time / 60:.1f} minutes")
-    print(f"Best epoch: {best_epoch}")
-    print(f"Best val loss: {best_val_loss:.4f}")
-    print(f"Model saved to: {save_dir / 'best_kinetic_model.pt'}")
+    logger.info("\n" + "=" * 50)
+    logger.info("Training Complete!")
+    logger.info("=" * 50)
+    logger.info(f"Total time: {total_time / 60:.1f} minutes")
+    logger.info(f"Best epoch: {best_epoch}")
+    logger.info(f"Best val loss: {best_val_loss:.4f}")
+    logger.info(f"Model saved to: {save_dir / 'best_kinetic_model.pt'}")
 
     # Final evaluation on test set
     if test_loader is not None and len(test_loader.dataset) > 1:
-        print("\n" + "=" * 50)
-        print("Test Set Evaluation")
-        print("=" * 50)
+        logger.info("\n" + "=" * 50)
+        logger.info("Test Set Evaluation")
+        logger.info("=" * 50)
 
         # Load best model
         try:
@@ -387,19 +390,20 @@ def main():
             model.load_state_dict(checkpoint['model_state_dict'])
 
             test_loss, test_losses = validate(model, test_loader, criterion, device)
-            print(f"Test loss: {test_loss:.4f}")
+            logger.info(f"Test loss: {test_loss:.4f}")
 
             for key, val in test_losses.items():
-                print(f"  {key}: {val:.4f}")
+                logger.info(f"  {key}: {val:.4f}")
         except Exception as e:
-            print(f"Test evaluation skipped due to: {e}")
+            logger.info(f"Test evaluation skipped due to: {e}")
     else:
-        print("\nTest set too small for evaluation (need >1 sample)")
+        logger.info("\nTest set too small for evaluation (need >1 sample)")
 
-    print("\n" + "=" * 50)
-    print("Done!")
-    print("=" * 50)
+    logger.info("\n" + "=" * 50)
+    logger.info("Done!")
+    logger.info("=" * 50)
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
     main()

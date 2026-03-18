@@ -15,9 +15,12 @@ Features encoded:
    - 3D coordinates from conformer generation
 """
 
+import logging
 import numpy as np
 from typing import Dict, List, Optional, Tuple, Union
 from dataclasses import dataclass
+
+logger = logging.getLogger(__name__)
 
 import torch
 from torch_geometric.data import Data
@@ -501,9 +504,9 @@ def get_feature_dimensions() -> Dict[str, int]:
 
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("StereoGNN Featurizer Test")
-    print("=" * 60)
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
+
+    logger.info("StereoGNN Featurizer Test")
 
     # Test molecules with different stereo features
     test_mols = [
@@ -519,11 +522,6 @@ if __name__ == "__main__":
     for smi, name in test_mols:
         data = featurizer.featurize(smi)
         if data:
-            print(f"\n{name} ({smi}):")
-            print(f"  Nodes: {data.x.shape}")
-            print(f"  Edges: {data.edge_attr.shape}")
-            print(f"  Stereocenters: {data.num_stereocenters}")
-            print(f"  Stereo bonds: {data.num_stereo_bonds}")
+            logger.info(f"{name} ({smi}): Nodes={data.x.shape}, Edges={data.edge_attr.shape}, Stereocenters={data.num_stereocenters}, Stereo bonds={data.num_stereo_bonds}")
 
-    print("\n" + "=" * 60)
-    print("Feature Dimensions:", get_feature_dimensions())
+    logger.info(f"Feature Dimensions: {get_feature_dimensions()}")

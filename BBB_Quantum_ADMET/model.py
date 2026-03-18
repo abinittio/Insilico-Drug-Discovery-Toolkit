@@ -9,6 +9,7 @@ Architecture:
 This is INDEPENDENT from BBB_System.
 """
 
+import logging
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -24,6 +25,8 @@ from torch_geometric.data import Data, Batch
 from typing import Dict, List, Optional, Tuple
 
 from config import MODEL_CONFIG, TRAINING_CONFIG
+
+logger = logging.getLogger(__name__)
 
 
 class QuantumAwareEncoder(nn.Module):
@@ -338,9 +341,7 @@ class PretrainingHead(nn.Module):
 
 
 class QuantumPretrainingModel(nn.Module):
-    """
-    Model for self-supervised pretraining on ZINC.
-    """
+    """Model for self-supervised pretraining on ZINC."""
 
     def __init__(
         self,
@@ -387,8 +388,9 @@ def count_parameters(model: nn.Module) -> int:
 
 # Test
 if __name__ == "__main__":
-    print("Testing Quantum ADMET Model...")
-    print("=" * 60)
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
+
+    logger.info("Testing Quantum ADMET Model...")
 
     # Create model
     model = QuantumADMETModel(
@@ -399,9 +401,9 @@ if __name__ == "__main__":
         num_tasks=6
     )
 
-    print(f"Total parameters: {count_parameters(model):,}")
-    print(f"Encoder parameters: {count_parameters(model.encoder):,}")
-    print(f"Head parameters: {count_parameters(model.head):,}")
+    logger.info("Total parameters: %s", f"{count_parameters(model):,}")
+    logger.info("Encoder parameters: %s", f"{count_parameters(model.encoder):,}")
+    logger.info("Head parameters: %s", f"{count_parameters(model.head):,}")
 
     # Test forward pass
     batch_size = 4
@@ -414,9 +416,8 @@ if __name__ == "__main__":
 
     outputs = model(x, edge_index, batch)
 
-    print(f"\nOutput shapes:")
+    logger.info("Output shapes:")
     for name, tensor in outputs.items():
-        print(f"  {name}: {tensor.shape}")
+        logger.info("  %s: %s", name, tensor.shape)
 
-    print("\n" + "=" * 60)
-    print("Model test complete!")
+    logger.info("Model test complete!")

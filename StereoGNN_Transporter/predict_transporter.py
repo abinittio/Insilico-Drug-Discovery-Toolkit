@@ -20,10 +20,13 @@ Usage:
     results = predictor.predict_batch(["CCO", "c1ccccc1CCN"])
 """
 
+import logging
 import torch
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass, asdict
+
+logger = logging.getLogger(__name__)
 
 from rdkit import Chem
 from rdkit.Chem import Descriptors, rdMolDescriptors
@@ -170,13 +173,13 @@ class TransporterGNNPredictor:
             self.model.load_state_dict(checkpoint['model_state_dict'])
             self.model.eval()
             self.trained = True
-            print(f"Loaded trained model from {model_path}")
+            logger.info(f"Loaded trained model from {model_path}")
             if 'val_auroc' in checkpoint:
-                print(f"  Validation AUROC: {checkpoint['val_auroc']:.4f}")
+                logger.info(f"  Validation AUROC: {checkpoint['val_auroc']:.4f}")
         else:
             self.trained = False
-            print(f"Warning: Model file not found at {model_path}")
-            print("Model initialized but not trained. Predictions will be random.")
+            logger.warning(f"Model file not found at {model_path}")
+            logger.warning("Model initialized but not trained. Predictions will be random.")
 
         # Featurizer for converting SMILES to graphs
         self.featurizer = MoleculeGraphFeaturizer(use_3d=False)
@@ -197,7 +200,7 @@ class TransporterGNNPredictor:
             dict with predictions and optional details
         """
         if not self.trained:
-            print("Warning: Using untrained model!")
+            logger.warning("Using untrained model!")
 
         # Validate SMILES
         mol = Chem.MolFromSmiles(smiles)
@@ -376,14 +379,14 @@ class TransporterGNNPredictor:
 
 
 def format_prediction_output(result: Dict) -> None:
-    """Pretty print prediction results."""
+    """Log prediction results."""
     if not result['success']:
-        print(f"FAILED: {result.get('error', 'Unknown error')}")
+        logger.error(f"FAILED: {result.get('error', 'Unknown error')}")
         return
 
-    print(f"\nSMILES: {result['smiles']}")
-    print(f"Category: {result['category']}")
-    print(f"\nTransporter Predictions:")
+    logger.info(f"SMILES: {result['smiles']}")
+    logger.info(f"Category: {result['category']}")
+    logger.info("Transporter Predictions:")
 
     for target in ['DAT', 'NET', 'SERT']:
         target_lower = target.lower()
@@ -391,43 +394,32 @@ def format_prediction_output(result: Dict) -> None:
         pred = result[f'{target_lower}_prediction']
         probs = result[f'{target_lower}_probs']
 
-        # Format prediction line
         pred_symbol = {'inactive': '-', 'blocker': 'B', 'substrate': 'S'}[pred]
-        print(f"  {target}: [{pred_symbol}] {pred.upper()} (substrate prob: {score:.3f})")
-        print(f"       Probabilities: inactive={probs['inactive_prob']:.3f}, "
+        logger.info(f"  {target}: [{pred_symbol}] {pred.upper()} (substrate prob: {score:.3f})")
+        logger.info(f"       Probabilities: inactive={probs['inactive_prob']:.3f}, "
               f"blocker={probs['blocker_prob']:.3f}, substrate={probs['substrate_prob']:.3f}")
 
     if 'molecular_descriptors' in result:
         desc = result['molecular_descriptors']
-        print(f"\nMolecular Properties:")
-        print(f"  Molecular Weight: {desc['molecular_weight']:.1f} Da")
-        print(f"  LogP: {desc['logp']:.2f}")
-        print(f"  TPSA: {desc['tpsa']:.1f} A^2")
-        print(f"  H-bond Donors: {desc['num_h_donors']}")
-        print(f"  H-bond Acceptors: {desc['num_h_acceptors']}")
-        print(f"  Basic Nitrogen: {desc['has_basic_nitrogen']}")
-        print(f"  Stereocenters: {desc['num_stereocenters']}")
-        print(f"  CNS Drug-like: {desc['cns_drug_like']}")
+        logger.info(f"Molecular Properties: MW={desc['molecular_weight']:.1f}, LogP={desc['logp']:.2f}, TPSA={desc['tpsa']:.1f}")
+        logger.info(f"  HBD={desc['num_h_donors']}, HBA={desc['num_h_acceptors']}, BasicN={desc['has_basic_nitrogen']}, Stereocenters={desc['num_stereocenters']}, CNS={desc['cns_drug_like']}")
 
         if desc.get('is_amphetamine_like'):
-            print(f"  Structure Type: Amphetamine-like")
+            logger.info(f"  Structure Type: Amphetamine-like")
         elif desc.get('is_phenethylamine'):
-            print(f"  Structure Type: Phenethylamine")
+            logger.info(f"  Structure Type: Phenethylamine")
         elif desc.get('is_cathinone_like'):
-            print(f"  Structure Type: Cathinone-like")
+            logger.info(f"  Structure Type: Cathinone-like")
 
     if result.get('warnings'):
-        print(f"\nWarnings:")
         for warning in result['warnings']:
-            print(f"  - {warning}")
-
-    print("-" * 70)
+            logger.warning(f"  {warning}")
 
 
 if __name__ == "__main__":
-    print("=" * 70)
-    print("StereoGNN Transporter Predictor - Testing")
-    print("=" * 70)
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
+
+    logger.info("StereoGNN Transporter Predictor - Testing")
 
     # Initialize predictor
     predictor = TransporterGNNPredictor()
@@ -444,18 +436,15 @@ if __name__ == "__main__":
         ('Cn1cnc2c1c(=O)n(C)c(=O)n2C', 'Caffeine', 'Inactive'),
     ]
 
-    print(f"\nTesting {len(test_compounds)} compounds:")
-    print("=" * 70)
+    logger.info(f"Testing {len(test_compounds)} compounds:")
 
     for smiles, name, expected in test_compounds:
-        print(f"\n{name} (Expected: {expected}):")
+        logger.info(f"{name} (Expected: {expected}):")
         result = predictor.predict(smiles, return_details=True)
         format_prediction_output(result)
 
     # Test enantiomer comparison
-    print("\n" + "=" * 70)
-    print("ENANTIOMER COMPARISON:")
-    print("=" * 70)
+    logger.info("ENANTIOMER COMPARISON:")
 
     comparison = predictor.compare_enantiomers(
         "C[C@H](N)Cc1ccccc1",   # d-Amphetamine
@@ -463,24 +452,19 @@ if __name__ == "__main__":
     )
 
     if comparison['success']:
-        print(f"\nd-Amphetamine vs l-Amphetamine:")
+        logger.info("d-Amphetamine vs l-Amphetamine:")
         for target, data in comparison['comparisons'].items():
-            print(f"  {target}: d={data['prob1']:.3f}, l={data['prob2']:.3f}, ratio={data['ratio']:.2f}x")
+            logger.info(f"  {target}: d={data['prob1']:.3f}, l={data['prob2']:.3f}, ratio={data['ratio']:.2f}x")
 
     # Batch prediction test
-    print("\n" + "=" * 70)
-    print("BATCH PREDICTION:")
-    print("=" * 70)
+    logger.info("BATCH PREDICTION:")
 
     batch_smiles = [s for s, _, _ in test_compounds[:4]]
     batch_results = predictor.predict_batch(batch_smiles, return_details=False)
 
-    print(f"\nBatch results:")
+    logger.info("Batch results:")
     for i, (result, (_, name, _)) in enumerate(zip(batch_results, test_compounds[:4])):
         if result['success']:
-            print(f"{i+1}. {name}: {result['category']}")
-            print(f"   DAT: {result['dat_score']:.3f}, NET: {result['net_score']:.3f}, SERT: {result['sert_score']:.3f}")
+            logger.info(f"{i+1}. {name}: {result['category']} DAT={result['dat_score']:.3f}, NET={result['net_score']:.3f}, SERT={result['sert_score']:.3f}")
 
-    print("\n" + "=" * 70)
-    print("Transporter GNN Predictor Ready!")
-    print("=" * 70)
+    logger.info("Transporter GNN Predictor Ready!")

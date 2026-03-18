@@ -9,11 +9,15 @@ Custom loss functions for handling:
 4. Label smoothing
 """
 
+import logging
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 from typing import Dict, Optional
+
+logger = logging.getLogger(__name__)
 
 
 class FocalLoss(nn.Module):
@@ -836,9 +840,9 @@ ENANTIOMER_PAIRS = [
 
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("Loss Functions Test")
-    print("=" * 60)
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
+
+    logger.info("Loss Functions Test")
 
     # Test focal loss
     focal = FocalLoss(gamma=2.0)
@@ -847,7 +851,7 @@ if __name__ == "__main__":
     labels[0] = -1  # Test ignore
 
     loss = focal(logits, labels)
-    print(f"Focal loss: {loss.item():.4f}")
+    logger.info(f"Focal loss: {loss.item():.4f}")
 
     # Test multi-task loss
     mt_loss = MultiTaskLoss(loss_fn='focal', learn_weights=True)
@@ -864,11 +868,11 @@ if __name__ == "__main__":
     }
 
     losses = mt_loss(predictions, targets)
-    print(f"\nMulti-task losses:")
+    logger.info("Multi-task losses:")
     for k, v in losses.items():
-        print(f"  {k}: {v.item():.4f}")
+        logger.info(f"  {k}: {v.item():.4f}")
 
     # Test class weight computation
     test_labels = torch.tensor([0, 0, 0, 1, 2, 2])
     weights = compute_class_weights(test_labels, num_classes=3)
-    print(f"\nClass weights for {test_labels.tolist()}: {weights.tolist()}")
+    logger.info(f"Class weights for {test_labels.tolist()}: {weights.tolist()}")

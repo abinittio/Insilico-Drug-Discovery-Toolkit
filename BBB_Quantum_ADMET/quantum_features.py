@@ -9,6 +9,7 @@ Uses RDKit ETKDG for 3D conformer generation and computes:
 This is INDEPENDENT from BBB_System.
 """
 
+import logging
 import numpy as np
 import torch
 from torch_geometric.data import Data
@@ -23,6 +24,8 @@ from config import (
     IONIZATION_ENERGY, ELECTRON_AFFINITY,
     QUANTUM_CONFIG
 )
+
+logger = logging.getLogger(__name__)
 
 
 class QuantumFeatureExtractor:
@@ -39,7 +42,7 @@ class QuantumFeatureExtractor:
         self.use_etkdg = use_etkdg
         self.random_seed = random_seed
 
-    def generate_conformer(self, mol) -> bool:
+    def generate_conformer(self, mol: Chem.Mol) -> bool:
         """Generate 3D conformer using ETKDG."""
         if mol is None:
             return False
@@ -73,7 +76,7 @@ class QuantumFeatureExtractor:
             warnings.warn(f"Conformer generation failed: {e}")
             return False
 
-    def compute_gasteiger_charges(self, mol) -> np.ndarray:
+    def compute_gasteiger_charges(self, mol: Chem.Mol) -> np.ndarray:
         """Compute Gasteiger partial charges."""
         try:
             AllChem.ComputeGasteigerCharges(mol)
@@ -87,7 +90,7 @@ class QuantumFeatureExtractor:
         except:
             return np.zeros(mol.GetNumAtoms())
 
-    def compute_fukui_indices(self, mol, charges: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def compute_fukui_indices(self, mol: Chem.Mol, charges: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Approximate Fukui indices from partial charges.
 
@@ -126,11 +129,8 @@ class QuantumFeatureExtractor:
 
         return fukui_plus, fukui_minus, fukui_zero
 
-    def compute_orbital_energies(self, mol) -> Tuple[np.ndarray, np.ndarray]:
-        """
-        Approximate HOMO/LUMO energies per atom using ionization energies
-        and electron affinities.
-        """
+    def compute_orbital_energies(self, mol: Chem.Mol) -> Tuple[np.ndarray, np.ndarray]:
+        """Approximate HOMO/LUMO energies per atom using ionization energies and electron affinities."""
         n_atoms = mol.GetNumAtoms()
         homo_approx = np.zeros(n_atoms)
         lumo_approx = np.zeros(n_atoms)
@@ -198,7 +198,7 @@ class QuantumFeatureExtractor:
         # Normalize
         return np.clip(electrophilicity, 0, 5) / 5.0
 
-    def get_atomic_features(self, atom) -> List[float]:
+    def get_atomic_features(self, atom: Chem.Atom) -> List[float]:
         """Extract 15 atomic features."""
         features = []
 
@@ -274,7 +274,7 @@ class QuantumFeatureExtractor:
 
         return features
 
-    def get_stereo_features(self, atom, mol) -> List[float]:
+    def get_stereo_features(self, atom: Chem.Atom, mol: Chem.Mol) -> List[float]:
         """Extract 6 stereochemistry features."""
         features = [0.0] * 6
 
@@ -434,7 +434,7 @@ def batch_smiles_to_graphs(
         smiles_list: List of SMILES strings
         targets_list: Optional list of target dicts (one per SMILES)
         use_etkdg: Whether to generate 3D conformers
-        verbose: Print progress
+        verbose: Log progress
 
     Returns:
         List of Data objects (None entries filtered out)
@@ -450,18 +450,19 @@ def batch_smiles_to_graphs(
             graphs.append(graph)
 
         if verbose and (i + 1) % 1000 == 0:
-            print(f"  Processed {i+1}/{len(smiles_list)} ({len(graphs)} valid)")
+            logger.info("Processed %d/%d (%d valid)", i + 1, len(smiles_list), len(graphs))
 
     if verbose:
-        print(f"Converted {len(graphs)}/{len(smiles_list)} molecules to graphs")
+        logger.info("Converted %d/%d molecules to graphs", len(graphs), len(smiles_list))
 
     return graphs
 
 
 # Test
 if __name__ == "__main__":
-    print("Testing Quantum Feature Extractor...")
-    print("=" * 60)
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
+
+    logger.info("Testing Quantum Feature Extractor...")
 
     extractor = QuantumFeatureExtractor(use_etkdg=True)
 
@@ -476,13 +477,12 @@ if __name__ == "__main__":
         graph = extractor.mol_to_graph(smiles)
 
         if graph is not None:
-            print(f"\n{name} ({smiles})")
-            print(f"  Nodes: {graph.x.shape[0]}")
-            print(f"  Features per node: {graph.x.shape[1]}")
-            print(f"  Edges: {graph.edge_index.shape[1]}")
-            print(f"  Feature range: [{graph.x.min():.3f}, {graph.x.max():.3f}]")
+            logger.info("%s (%s)", name, smiles)
+            logger.info("  Nodes: %d", graph.x.shape[0])
+            logger.info("  Features per node: %d", graph.x.shape[1])
+            logger.info("  Edges: %d", graph.edge_index.shape[1])
+            logger.info("  Feature range: [%.3f, %.3f]", graph.x.min(), graph.x.max())
         else:
-            print(f"\n{name}: Failed to convert")
+            logger.info("%s: Failed to convert", name)
 
-    print("\n" + "=" * 60)
-    print("Feature extraction test complete!")
+    logger.info("Feature extraction test complete!")

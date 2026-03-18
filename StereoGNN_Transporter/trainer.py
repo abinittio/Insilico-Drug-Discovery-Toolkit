@@ -12,12 +12,15 @@ Complete training loop with:
 - Multi-task loss handling
 """
 
+import logging
 import os
 import time
 import json
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from collections import defaultdict
+
+logger = logging.getLogger(__name__)
 
 import numpy as np
 import torch
@@ -211,14 +214,14 @@ class Trainer:
             mode='max',  # Maximize AUROC
         )
 
-        print(f"Training setup complete:")
-        print(f"  Device: {self.device}")
-        print(f"  Optimizer: AdamW (lr={self.config.learning_rate})")
-        print(f"  Scheduler: Cosine with warmup")
-        print(f"  Loss: {self.config.loss_type}")
+        logger.info("Training setup complete:")
+        logger.info(f"  Device: {self.device}")
+        logger.info(f"  Optimizer: AdamW (lr={self.config.learning_rate})")
+        logger.info(f"  Scheduler: Cosine with warmup")
+        logger.info(f"  Loss: {self.config.loss_type}")
         if class_weights:
             for k, v in class_weights.items():
-                print(f"  {k} weights: {v.cpu().numpy()}")
+                logger.info(f"  {k} weights: {v.cpu().numpy()}")
 
     def train_epoch(self, dataloader) -> Dict[str, float]:
         """Train for one epoch."""
@@ -342,7 +345,7 @@ class Trainer:
                 metrics[f'{task}_auroc'] = auroc
                 metrics[f'{task}_prauc'] = prauc
             except Exception as e:
-                print(f"Warning: Could not compute metrics for {task}: {e}")
+                logger.warning(f"Could not compute metrics for {task}: {e}")
 
         # Compute average AUROC across all tasks
         aurocs = [v for k, v in metrics.items() if 'auroc' in k]
@@ -370,9 +373,7 @@ class Trainer:
         """
         num_epochs = num_epochs or self.config.max_epochs
 
-        print("=" * 60)
-        print(f"Starting training for {num_epochs} epochs")
-        print("=" * 60)
+        logger.info(f"Starting training for {num_epochs} epochs")
 
         for epoch in range(num_epochs):
             self.current_epoch = epoch
@@ -394,9 +395,9 @@ class Trainer:
                 self.training_history[f'val_{k}'].append(v)
             self.training_history['lr'].append(self.scheduler.get_lr()[0])
 
-            # Print progress
+            # Log progress
             epoch_time = time.time() - start_time
-            print(
+            logger.info(
                 f"Epoch {epoch:3d} | "
                 f"Train Loss: {train_metrics['total']:.4f} | "
                 f"Val Loss: {val_metrics['total']:.4f} | "
@@ -410,11 +411,11 @@ class Trainer:
             if current_auroc > self.best_val_auroc:
                 self.best_val_auroc = current_auroc
                 self.save_checkpoint('best_model.pt')
-                print(f"  -> New best model! AUROC: {current_auroc:.4f}")
+                logger.info(f"  -> New best model! AUROC: {current_auroc:.4f}")
 
             # Early stopping
             if self.early_stopping(current_auroc):
-                print(f"Early stopping at epoch {epoch}")
+                logger.info(f"Early stopping at epoch {epoch}")
                 break
 
             # Periodic checkpoint
@@ -453,7 +454,7 @@ class Trainer:
         self.current_epoch = checkpoint['epoch']
         self.best_val_auroc = checkpoint['best_val_auroc']
         self.training_history = defaultdict(list, checkpoint['training_history'])
-        print(f"Loaded checkpoint from epoch {self.current_epoch}")
+        logger.info(f"Loaded checkpoint from epoch {self.current_epoch}")
 
     def save_history(self):
         """Save training history to JSON."""
@@ -511,9 +512,9 @@ def train_model(
 
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("StereoGNN Training Pipeline Test")
-    print("=" * 60)
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
+
+    logger.info("StereoGNN Training Pipeline Test")
 
     # Create small test to verify pipeline works
     from data_curation import DataCurationPipeline
@@ -524,7 +525,7 @@ if __name__ == "__main__":
 
     # Create model
     model = StereoGNN()
-    print(f"\nModel parameters: {sum(p.numel() for p in model.parameters()):,}")
+    logger.info(f"Model parameters: {sum(p.numel() for p in model.parameters()):,}")
 
     # Create trainer
     trainer = Trainer(model, experiment_name="test_run")
@@ -547,5 +548,5 @@ if __name__ == "__main__":
             num_epochs=3,
         )
 
-        print("\nTraining complete!")
-        print(f"Best validation AUROC: {trainer.best_val_auroc:.4f}")
+        logger.info("Training complete!")
+        logger.info(f"Best validation AUROC: {trainer.best_val_auroc:.4f}")

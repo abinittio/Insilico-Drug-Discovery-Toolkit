@@ -4,7 +4,7 @@ Multi-task regression with 34-dimensional quantum features
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict
+from typing import List, Dict, Tuple
 import torch
 
 
@@ -87,7 +87,7 @@ class DataConfig:
     ])
 
     # Normalization targets (approximate ranges for standardization)
-    endpoint_ranges: Dict[str, tuple] = field(default_factory=lambda: {
+    endpoint_ranges: Dict[str, Tuple[float, float]] = field(default_factory=lambda: {
         'logbb': (-3.0, 2.0),     # Log BB ratio
         'logs': (-10.0, 2.0),     # Log solubility
         'logp': (-3.0, 8.0),      # LogP
@@ -126,7 +126,7 @@ QUANTUM_CONFIG = QuantumConfig()
 
 
 # Electronegativity values (Pauling scale)
-ELECTRONEGATIVITY = {
+ELECTRONEGATIVITY: Dict[int, float] = {
     1: 2.20,   # H
     5: 2.04,   # B
     6: 2.55,   # C
@@ -142,7 +142,7 @@ ELECTRONEGATIVITY = {
 }
 
 # Atomic polarizabilities (Angstrom^3)
-POLARIZABILITY = {
+POLARIZABILITY: Dict[int, float] = {
     1: 0.667,   # H
     6: 1.76,    # C
     7: 1.10,    # N
@@ -156,7 +156,7 @@ POLARIZABILITY = {
 }
 
 # Ionization energies (eV) - for HOMO approximation
-IONIZATION_ENERGY = {
+IONIZATION_ENERGY: Dict[int, float] = {
     1: 13.60,   # H
     6: 11.26,   # C
     7: 14.53,   # N
@@ -170,7 +170,7 @@ IONIZATION_ENERGY = {
 }
 
 # Electron affinities (eV) - for LUMO approximation
-ELECTRON_AFFINITY = {
+ELECTRON_AFFINITY: Dict[int, float] = {
     1: 0.75,    # H
     6: 1.26,    # C
     7: -0.07,   # N (negative = doesn't bind)

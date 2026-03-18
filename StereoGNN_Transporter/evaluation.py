@@ -12,10 +12,13 @@ Implements ALL success criteria metrics:
 """
 
 import json
+import logging
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from collections import defaultdict
 from dataclasses import dataclass
+
+logger = logging.getLogger(__name__)
 
 import numpy as np
 import pandas as pd
@@ -504,61 +507,51 @@ class ModelEvaluator:
             failed_criteria=failed_criteria,
         )
 
-    def print_results(self, results: EvaluationResults):
-        """Pretty print evaluation results."""
-        print("\n" + "=" * 70)
-        print("EVALUATION RESULTS")
-        print("=" * 70)
-
-        print(f"\n{'METRIC':<30} {'VALUE':<15} {'TARGET':<15} {'STATUS':<10}")
-        print("-" * 70)
+    def print_results(self, results: EvaluationResults) -> None:
+        """Log evaluation results."""
+        logger.info("EVALUATION RESULTS")
 
         # Overall AUROC
         status = "PASS" if results.overall_auroc >= self.config.min_overall_auroc else "FAIL"
-        print(f"{'Overall AUROC':<30} {results.overall_auroc:<15.4f} {'>= ' + str(self.config.min_overall_auroc):<15} {status:<10}")
+        logger.info(f"Overall AUROC: {results.overall_auroc:.4f} (target >= {self.config.min_overall_auroc}) [{status}]")
 
         # Per-task metrics
         for task in ['DAT', 'NET', 'SERT']:
             if task in results.monoamine_aurocs:
                 auroc = results.monoamine_aurocs[task]
                 status = "PASS" if auroc >= self.config.min_monoamine_auroc else "FAIL"
-                print(f"{task + ' AUROC':<30} {auroc:<15.4f} {'>= ' + str(self.config.min_monoamine_auroc):<15} {status:<10}")
+                logger.info(f"{task} AUROC: {auroc:.4f} (target >= {self.config.min_monoamine_auroc}) [{status}]")
 
             if task in results.monoamine_praucs:
                 prauc = results.monoamine_praucs[task]
                 status = "PASS" if prauc >= self.config.min_prauc else "FAIL"
-                print(f"{task + ' PR-AUC':<30} {prauc:<15.4f} {'>= ' + str(self.config.min_prauc):<15} {status:<10}")
+                logger.info(f"{task} PR-AUC: {prauc:.4f} (target >= {self.config.min_prauc}) [{status}]")
 
         # Stereo sensitivity
         status = "PASS" if results.stereo_accuracy >= self.config.min_stereo_accuracy else "FAIL"
-        print(f"{'Stereo Sensitivity':<30} {results.stereo_accuracy:<15.4f} {'>= ' + str(self.config.min_stereo_accuracy):<15} {status:<10}")
+        logger.info(f"Stereo Sensitivity: {results.stereo_accuracy:.4f} (target >= {self.config.min_stereo_accuracy}) [{status}]")
 
         # Calibration
         status = "PASS" if results.expected_calibration_error <= self.config.max_ece else "FAIL"
-        print(f"{'Calibration (ECE)':<30} {results.expected_calibration_error:<15.4f} {'<= ' + str(self.config.max_ece):<15} {status:<10}")
+        logger.info(f"Calibration (ECE): {results.expected_calibration_error:.4f} (target <= {self.config.max_ece}) [{status}]")
 
         # Virtual screening
         status = "PASS" if results.virtual_screening_valid else "FAIL"
-        print(f"{'Virtual Screening':<30} {str(results.virtual_screening_valid):<15} {'True':<15} {status:<10}")
+        logger.info(f"Virtual Screening: {results.virtual_screening_valid} [{status}]")
 
         # Enrichment factors
-        print("\n" + "-" * 70)
-        print("ENRICHMENT FACTORS")
-        print("-" * 70)
+        logger.info("ENRICHMENT FACTORS")
         for task, efs in results.enrichment_factors.items():
             for ef_name, ef_val in efs.items():
-                print(f"  {task} {ef_name}: {ef_val:.2f}x")
+                logger.info(f"  {task} {ef_name}: {ef_val:.2f}x")
 
         # Final verdict
-        print("\n" + "=" * 70)
         if results.passes_criteria:
-            print("OVERALL: ALL CRITERIA PASSED")
+            logger.info("OVERALL: ALL CRITERIA PASSED")
         else:
-            print("OVERALL: FAILED")
-            print("\nFailed criteria:")
+            logger.warning("OVERALL: FAILED")
             for criterion in results.failed_criteria:
-                print(f"  - {criterion}")
-        print("=" * 70)
+                logger.warning(f"  - {criterion}")
 
     def save_results(self, results: EvaluationResults, path: Path):
         """Save results to JSON."""
@@ -598,9 +591,9 @@ def evaluate_model(
 
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("Evaluation Suite Test")
-    print("=" * 60)
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
+
+    logger.info("Evaluation Suite Test")
 
     # Test metrics calculator
     mc = MetricsCalculator()
@@ -609,16 +602,16 @@ if __name__ == "__main__":
     y_true = np.array([0, 0, 0, 1, 1, 1, 1, 1])
     y_score = np.array([0.1, 0.2, 0.3, 0.6, 0.7, 0.8, 0.9, 0.95])
 
-    print(f"\nAUROC: {mc.auroc(y_true, y_score):.4f}")
-    print(f"PR-AUC: {mc.prauc(y_true, y_score):.4f}")
-    print(f"EF@10%: {mc.enrichment_factor(y_true, y_score, 0.10):.2f}x")
-    print(f"ECE: {mc.expected_calibration_error(y_true, y_score):.4f}")
+    logger.info(f"AUROC: {mc.auroc(y_true, y_score):.4f}")
+    logger.info(f"PR-AUC: {mc.prauc(y_true, y_score):.4f}")
+    logger.info(f"EF@10%: {mc.enrichment_factor(y_true, y_score, 0.10):.2f}x")
+    logger.info(f"ECE: {mc.expected_calibration_error(y_true, y_score):.4f}")
 
     # Test stereo evaluator with dummy model
-    print("\nTesting stereo sensitivity evaluator...")
+    logger.info("Testing stereo sensitivity evaluator...")
     model = StereoGNN()
     device = torch.device('cpu')
     stereo_eval = StereoSensitivityEvaluator(model, device)
     accuracy, results = stereo_eval.evaluate()
-    print(f"Stereo accuracy (untrained model): {accuracy:.4f}")
-    print(f"Number of pairs evaluated: {len(results)}")
+    logger.info(f"Stereo accuracy (untrained model): {accuracy:.4f}")
+    logger.info(f"Number of pairs evaluated: {len(results)}")
