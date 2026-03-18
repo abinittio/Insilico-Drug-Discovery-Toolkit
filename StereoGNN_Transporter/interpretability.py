@@ -538,35 +538,35 @@ class InterpretabilityReport:
 
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("Interpretability Module Test")
-    print("=" * 60)
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
+
+    logger.info("Interpretability Module Test")
 
     # Create model and device
     model = StereoGNN()
     device = torch.device('cpu')
 
     # Test attention analyzer
-    print("\nTesting Attention Analyzer...")
+    logger.info("Testing Attention Analyzer...")
     attn = AttentionAnalyzer(model, device)
     result = attn.get_attention_weights("C[C@H](N)Cc1ccccc1")  # d-Amphetamine
     if result:
-        print(f"  Stereocenters: {result['stereocenters']}")
-        print(f"  Attention ratio (stereo/non-stereo): {result['attention_ratio']:.3f}")
+        logger.info(f"  Stereocenters: {result['stereocenters']}")
+        logger.info(f"  Attention ratio (stereo/non-stereo): {result['attention_ratio']:.3f}")
 
     # Test substructure analyzer
-    print("\nTesting Substructure Analyzer...")
+    logger.info("Testing Substructure Analyzer...")
     substruct = SubstructureAnalyzer(model, device)
     result = substruct.analyze("C[C@H](N)Cc1ccccc1", "DAT")
     if result:
-        print(f"  Found pharmacophores: {list(result['pharmacophores'].keys())}")
-        print(f"  Prediction: {result['prediction']}")
+        logger.info(f"  Found pharmacophores: {list(result['pharmacophores'].keys())}")
+        logger.info(f"  Prediction: {result['prediction']}")
 
     # Test interpretability report
-    print("\nGenerating interpretability report...")
+    logger.info("Generating interpretability report...")
     reporter = InterpretabilityReport(model, device)
     report = reporter.generate_report("C[C@H](N)Cc1ccccc1", "DAT")
 
-    print(f"  Report sections: {list(report.keys())}")
+    logger.info(f"  Report sections: {list(report.keys())}")
     if 'visualization_svg' in report:
-        print("  Visualization SVG generated successfully")
+        logger.info("  Visualization SVG generated successfully")

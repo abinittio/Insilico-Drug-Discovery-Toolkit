@@ -3,12 +3,15 @@ Final Data Verification with Augmentation
 ==========================================
 """
 
+import logging
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 import pandas as pd
 from rdkit import Chem
+
+logger = logging.getLogger(__name__)
 
 from data_comprehensive import ComprehensiveLiteratureData
 from data_sar_expansion import SARExpander, DecoyGenerator
@@ -17,30 +20,30 @@ from data_augmentation import StereoisomerEnumerator
 
 
 def main():
-    print("=" * 70)
-    print("FINAL DATA VERIFICATION WITH AUGMENTATION")
-    print("=" * 70)
+    logger.info("=" * 70)
+    logger.info("FINAL DATA VERIFICATION WITH AUGMENTATION")
+    logger.info("=" * 70)
 
     # Collect all data sources
-    print("\n[1] Collecting data sources...")
+    logger.info("\n[1] Collecting data sources...")
 
     # Literature
     lit_df = ComprehensiveLiteratureData.get_all_data()
-    print(f"  Literature: {lit_df['smiles'].nunique()} compounds")
+    logger.info(f"  Literature: {lit_df['smiles'].nunique()} compounds")
 
     # SAR expanded
     expander = SARExpander()
     sar_df = expander.generate_all()
-    print(f"  SAR-expanded: {sar_df['smiles'].nunique()} compounds")
+    logger.info(f"  SAR-expanded: {sar_df['smiles'].nunique()} compounds")
 
     # Decoys
     decoy_gen = DecoyGenerator()
     decoy_df = decoy_gen.generate_decoys()
-    print(f"  Decoys: {decoy_df['smiles'].nunique()} compounds")
+    logger.info(f"  Decoys: {decoy_df['smiles'].nunique()} compounds")
 
     # Additional
     add_df = get_additional_data()
-    print(f"  Additional: {add_df['smiles'].nunique()} compounds")
+    logger.info(f"  Additional: {add_df['smiles'].nunique()} compounds")
 
     # Combine
     combined = pd.concat([lit_df, sar_df, decoy_df, add_df], ignore_index=True)
@@ -58,19 +61,19 @@ def main():
     # Deduplicate
     combined = combined.drop_duplicates(subset=['smiles', 'target'])
 
-    print(f"\n[2] Combined (before augmentation):")
-    print(f"  Total records: {len(combined)}")
-    print(f"  Unique compounds: {combined['smiles'].nunique()}")
+    logger.info(f"\n[2] Combined (before augmentation):")
+    logger.info(f"  Total records: {len(combined)}")
+    logger.info(f"  Unique compounds: {combined['smiles'].nunique()}")
 
     for target in ['DAT', 'NET', 'SERT']:
         t_df = combined[combined['target'] == target]
         subs = len(t_df[t_df['label'] == 2])
         block = len(t_df[t_df['label'] == 1])
         inact = len(t_df[t_df['label'] == 0])
-        print(f"  {target}: {subs} substrates | {block} blockers | {inact} inactive")
+        logger.info(f"  {target}: {subs} substrates | {block} blockers | {inact} inactive")
 
     # Apply stereoisomer augmentation
-    print("\n[3] Applying stereoisomer augmentation...")
+    logger.info("\n[3] Applying stereoisomer augmentation...")
     enumerator = StereoisomerEnumerator()
 
     augmented_records = []
@@ -108,16 +111,16 @@ def main():
 
     augmented_df = pd.DataFrame(augmented_records)
 
-    print(f"\n[4] After augmentation:")
-    print(f"  Total records: {len(augmented_df)}")
-    print(f"  Unique compounds: {augmented_df['smiles'].nunique()}")
+    logger.info(f"\n[4] After augmentation:")
+    logger.info(f"  Total records: {len(augmented_df)}")
+    logger.info(f"  Unique compounds: {augmented_df['smiles'].nunique()}")
 
     for target in ['DAT', 'NET', 'SERT']:
         t_df = augmented_df[augmented_df['target'] == target]
         subs = len(t_df[t_df['label'] == 2])
         block = len(t_df[t_df['label'] == 1])
         inact = len(t_df[t_df['label'] == 0])
-        print(f"  {target}: {subs} substrates | {block} blockers | {inact} inactive")
+        logger.info(f"  {target}: {subs} substrates | {block} blockers | {inact} inactive")
 
     # Stereochemistry stats
     stereo_count = 0
@@ -127,12 +130,12 @@ def main():
             stereo_count += 1
 
     total = augmented_df['smiles'].nunique()
-    print(f"\n  Compounds with stereocenters: {stereo_count}/{total} ({100*stereo_count/total:.1f}%)")
+    logger.info(f"\n  Compounds with stereocenters: {stereo_count}/{total} ({100*stereo_count/total:.1f}%)")
 
     # Check success criteria
-    print("\n" + "=" * 70)
-    print("SUCCESS CRITERIA")
-    print("=" * 70)
+    logger.info("\n" + "=" * 70)
+    logger.info("SUCCESS CRITERIA")
+    logger.info("=" * 70)
 
     min_substrates = 100  # Per target
     min_total = 1000  # Total unique compounds
@@ -145,28 +148,29 @@ def main():
         status = "PASS" if subs >= min_substrates else "FAIL"
         if status == "FAIL":
             all_pass = False
-        print(f"  {target} substrates >= {min_substrates}: {subs} [{status}]")
+        logger.info(f"  {target} substrates >= {min_substrates}: {subs} [{status}]")
 
     total = augmented_df['smiles'].nunique()
     status = "PASS" if total >= min_total else "FAIL"
     if status == "FAIL":
         all_pass = False
-    print(f"  Total compounds >= {min_total}: {total} [{status}]")
+    logger.info(f"  Total compounds >= {min_total}: {total} [{status}]")
 
-    print("\n" + "=" * 70)
+    logger.info("\n" + "=" * 70)
     if all_pass:
-        print("ALL CRITERIA PASSED - Ready for training!")
+        logger.info("ALL CRITERIA PASSED - Ready for training!")
     else:
-        print("Some criteria failed - but this is the realistic maximum")
-        print("Proceeding with available data...")
-    print("=" * 70)
+        logger.info("Some criteria failed - but this is the realistic maximum")
+        logger.info("Proceeding with available data...")
+    logger.info("=" * 70)
 
     # Save
     output_dir = Path("./data")
     output_dir.mkdir(exist_ok=True)
     augmented_df.to_parquet(output_dir / "final_augmented.parquet")
-    print(f"\nSaved to {output_dir / 'final_augmented.parquet'}")
+    logger.info(f"\nSaved to {output_dir / 'final_augmented.parquet'}")
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
     main()

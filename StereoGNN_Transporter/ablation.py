@@ -13,10 +13,13 @@ This provides scientific rigor and validates our architectural choices.
 """
 
 import json
+import logging
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass, field
 from copy import deepcopy
+
+logger = logging.getLogger(__name__)
 
 import numpy as np
 import torch
@@ -113,12 +116,12 @@ class AblationRunner:
         Returns:
             AblationStudy with all results
         """
-        print("=" * 70)
-        print("ABLATION STUDY")
-        print("=" * 70)
+        logger.info("=" * 70)
+        logger.info("ABLATION STUDY")
+        logger.info("=" * 70)
 
         # 1. Train baseline model
-        print("\n[1/6] Training baseline model (full StereoGNN)...")
+        logger.info("\n[1/6] Training baseline model (full StereoGNN)...")
         baseline_result = self._train_and_evaluate(
             model=StereoGNN(),
             name="baseline",
@@ -135,7 +138,7 @@ class AblationRunner:
         )
 
         # 2. Ablation: Remove stereochemistry features
-        print("\n[2/6] Ablation: No stereochemistry features...")
+        logger.info("\n[2/6] Ablation: No stereochemistry features...")
         no_stereo_result = self._train_and_evaluate(
             model=StereoGNNForAblation(),
             name="no_stereo",
@@ -161,7 +164,7 @@ class AblationRunner:
         ))
 
         # 3. Ablation: Single-task learning (DAT only)
-        print("\n[3/6] Ablation: Single-task learning (DAT only)...")
+        logger.info("\n[3/6] Ablation: Single-task learning (DAT only)...")
         single_task_model = self._create_single_task_model()
         single_task_result = self._train_and_evaluate(
             model=single_task_model,
@@ -188,7 +191,7 @@ class AblationRunner:
         ))
 
         # 4. Ablation: No attention readout (mean pooling)
-        print("\n[4/6] Ablation: Mean pooling (no attention readout)...")
+        logger.info("\n[4/6] Ablation: Mean pooling (no attention readout)...")
         no_attn_model = self._create_no_attention_model()
         no_attn_result = self._train_and_evaluate(
             model=no_attn_model,
@@ -215,7 +218,7 @@ class AblationRunner:
         ))
 
         # 5. Ablation: Fewer GNN layers (3 instead of 6)
-        print("\n[5/6] Ablation: Fewer GNN layers (3)...")
+        logger.info("\n[5/6] Ablation: Fewer GNN layers (3)...")
         shallow_model = self._create_shallow_model()
         shallow_result = self._train_and_evaluate(
             model=shallow_model,
@@ -242,7 +245,7 @@ class AblationRunner:
         ))
 
         # 6. Ablation: No focal loss (standard CE)
-        print("\n[6/6] Ablation: Standard cross-entropy loss...")
+        logger.info("\n[6/6] Ablation: Standard cross-entropy loss...")
         ce_result = self._train_and_evaluate(
             model=StereoGNN(),
             name="standard_ce",
@@ -366,23 +369,23 @@ class AblationRunner:
         results_path = self.output_dir / "ablation_results.json"
         with open(results_path, 'w') as f:
             json.dump(study.to_dict(), f, indent=2)
-        print(f"\nResults saved to {results_path}")
+        logger.info(f"\nResults saved to {results_path}")
 
     def _print_summary(self, study: AblationStudy):
         """Print summary of ablation study."""
-        print("\n" + "=" * 70)
-        print("ABLATION STUDY SUMMARY")
-        print("=" * 70)
+        logger.info("\n" + "=" * 70)
+        logger.info("ABLATION STUDY SUMMARY")
+        logger.info("=" * 70)
 
-        print(f"\nBaseline: {study.baseline_name}")
-        print(f"  AUROC: {study.baseline_auroc:.4f}")
-        print(f"  Stereo Accuracy: {study.baseline_stereo:.4f}")
+        logger.info(f"\nBaseline: {study.baseline_name}")
+        logger.info(f"  AUROC: {study.baseline_auroc:.4f}")
+        logger.info(f"  Stereo Accuracy: {study.baseline_stereo:.4f}")
 
-        print(f"\n{'Ablation':<30} {'AUROC':<10} {'Delta':<10} {'Stereo':<10} {'Delta':<10}")
-        print("-" * 70)
+        logger.info(f"\n{'Ablation':<30} {'AUROC':<10} {'Delta':<10} {'Stereo':<10} {'Delta':<10}")
+        logger.info("-" * 70)
 
         for abl in study.ablations:
-            print(
+            logger.info(
                 f"{abl.name:<30} "
                 f"{abl.overall_auroc:<10.4f} "
                 f"{abl.auroc_delta:+.4f}{'':3} "
@@ -390,7 +393,7 @@ class AblationRunner:
                 f"{abl.stereo_delta:+.4f}"
             )
 
-        print("-" * 70)
+        logger.info("-" * 70)
 
         # Check critical ablation (stereochemistry)
         stereo_ablation = next(
@@ -399,13 +402,13 @@ class AblationRunner:
         )
         if stereo_ablation:
             drop = -stereo_ablation.auroc_delta
-            print(f"\nCRITICAL CHECK: Stereo ablation AUROC drop = {drop:.4f}")
+            logger.info(f"\nCRITICAL CHECK: Stereo ablation AUROC drop = {drop:.4f}")
             if drop >= 0.05:
-                print("  STATUS: PASS (>= 5% drop proves stereo features matter)")
+                logger.info("  STATUS: PASS (>= 5% drop proves stereo features matter)")
             else:
-                print("  STATUS: WARN (< 5% drop - may need more stereoselective data)")
+                logger.info("  STATUS: WARN (< 5% drop - may need more stereoselective data)")
 
-        print("=" * 70)
+        logger.info("=" * 70)
 
 
 def run_ablation_study(num_epochs: int = 50) -> AblationStudy:
@@ -438,11 +441,9 @@ def run_ablation_study(num_epochs: int = 50) -> AblationStudy:
 
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("Ablation Study Framework Test")
-    print("=" * 60)
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
 
-    # Quick test with synthetic data
-    print("\nThis script runs the full ablation study.")
-    print("Run with: python ablation.py")
-    print("\nFor quick testing, run: run_ablation_study(num_epochs=3)")
+    logger.info("Ablation Study Framework Test")
+    logger.info("This script runs the full ablation study.")
+    logger.info("Run with: python ablation.py")
+    logger.info("For quick testing, run: run_ablation_study(num_epochs=3)")

@@ -11,8 +11,11 @@ The key insight: transporter substrates share common features
 Learning these general patterns helps monoamine-specific prediction.
 """
 
+import logging
 import math
 from typing import Dict, List, Optional, Tuple, Set
+
+logger = logging.getLogger(__name__)
 
 import torch
 import torch.nn as nn
@@ -544,18 +547,18 @@ def create_finetuning_model(
 
 
 if __name__ == "__main__":
-    print("=" * 70)
-    print("StereoGNN Pretraining Model Test")
-    print("=" * 70)
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
+
+    logger.info("StereoGNN Pretraining Model Test")
 
     # Test pretraining model
     pretrain_model = StereoGNNPretrain()
-    print(f"Pretrain model parameters: {count_parameters(pretrain_model):,}")
-    print(f"Targets: {pretrain_model.targets}")
+    logger.info(f"Pretrain model parameters: {count_parameters(pretrain_model):,}")
+    logger.info(f"Targets: {pretrain_model.targets}")
 
     # Test fine-tuning model
     finetune_model = StereoGNNFinetune()
-    print(f"\nFinetune model parameters: {count_parameters(finetune_model):,}")
+    logger.info(f"Finetune model parameters: {count_parameters(finetune_model):,}")
 
     # Test from pretrained
     finetune_from_pretrain = StereoGNNFinetune.from_pretrained(
@@ -563,12 +566,10 @@ if __name__ == "__main__":
     )
     trainable = count_parameters(finetune_from_pretrain)
     total = sum(p.numel() for p in finetune_from_pretrain.parameters())
-    print(f"From pretrained (frozen backbone): {trainable:,} / {total:,} trainable")
+    logger.info(f"From pretrained (frozen backbone): {trainable:,} / {total:,} trainable")
 
     # Ablation model
     ablation_model = StereoGNNForAblation()
-    print(f"\nAblation model parameters: {count_parameters(ablation_model):,}")
+    logger.info(f"Ablation model parameters: {count_parameters(ablation_model):,}")
 
-    print("\n" + "=" * 70)
-    print("Model architecture ready for pretraining + fine-tuning")
-    print("=" * 70)
+    logger.info("Model architecture ready for pretraining + fine-tuning")

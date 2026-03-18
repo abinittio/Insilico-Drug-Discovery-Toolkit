@@ -13,10 +13,13 @@ Usage:
     # Opens at http://localhost:7860
 """
 
+import logging
 import os
 import sys
 from typing import Dict, List, Optional, Tuple
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 import gradio as gr
 from rdkit import Chem
@@ -517,14 +520,16 @@ C[C@H](NC)Cc1ccccc1""",
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
+
     # Load predictor at startup
-    print("Loading model...")
+    logger.info("Loading model...")
     try:
         predictor = load_predictor()
-        print("Model loaded successfully!")
+        logger.info("Model loaded successfully!")
     except Exception as e:
-        print(f"Warning: Could not load model: {e}")
-        print("Running with randomly initialized weights")
+        logger.warning(f"Could not load model: {e}")
+        logger.warning("Running with randomly initialized weights")
 
     # Create and launch interface
     demo = create_interface()

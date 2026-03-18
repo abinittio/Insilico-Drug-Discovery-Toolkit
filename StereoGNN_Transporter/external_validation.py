@@ -11,12 +11,15 @@ than for amphetamines. R-(-)-MDMA also has significant SERT activity. The model'
 prediction of similar activity for both enantiomers may reflect this reality.
 """
 
+import logging
 import torch
 import torch.nn.functional as F
 from torch_geometric.data import Batch
 from rdkit import Chem
 from typing import Dict, List, Tuple
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 # Import model and featurizer
 from run_training import StereoGNNSmallFinetune
@@ -265,17 +268,17 @@ KNOWN_BLOCKERS = [
 
 def run_external_validation():
     """Run complete external validation."""
-    print("=" * 70)
-    print("EXTERNAL VALIDATION - StereoGNN Transporter Model")
-    print(f"Testing {len(STEREO_VALIDATION_PAIRS)} stereo pairs")
-    print("=" * 70)
+    logger.info("=" * 70)
+    logger.info("EXTERNAL VALIDATION - StereoGNN Transporter Model")
+    logger.info(f"Testing {len(STEREO_VALIDATION_PAIRS)} stereo pairs")
+    logger.info("=" * 70)
 
     validator = ExternalValidator()
 
     # 1. Stereo sensitivity validation
-    print("\n" + "-" * 70)
-    print("1. STEREO SENSITIVITY VALIDATION")
-    print("-" * 70)
+    logger.info("\n" + "-" * 70)
+    logger.info("1. STEREO SENSITIVITY VALIDATION")
+    logger.info("-" * 70)
 
     stereo_correct = 0
     stereo_total = 0
@@ -287,7 +290,7 @@ def run_external_validation():
         l_pred = validator.predict(pair['l_smiles'])
 
         if d_pred is None or l_pred is None:
-            print(f"  {pair['name']}: SKIPPED (featurization failed)")
+            logger.info(f"  {pair['name']}: SKIPPED (featurization failed)")
             continue
 
         target = pair['target']
@@ -312,20 +315,20 @@ def run_external_validation():
             'margin': margin
         })
 
-        print(f"  {pair['name']:30s} | d={d_prob:.3f} l={l_prob:.3f} | margin={margin:+.3f} | {status}")
+        logger.info(f"  {pair['name']:30s} | d={d_prob:.3f} l={l_prob:.3f} | margin={margin:+.3f} | {status}")
 
     stereo_accuracy = stereo_correct / stereo_total if stereo_total > 0 else 0
-    print(f"\n  STEREO SENSITIVITY: {stereo_correct}/{stereo_total} = {stereo_accuracy:.1%}")
+    logger.info(f"\n  STEREO SENSITIVITY: {stereo_correct}/{stereo_total} = {stereo_accuracy:.1%}")
 
     if failed_pairs:
-        print(f"\n  FAILED PAIRS ({len(failed_pairs)}):")
+        logger.info(f"\n  FAILED PAIRS ({len(failed_pairs)}):")
         for name in failed_pairs:
-            print(f"    - {name}")
+            logger.info(f"    - {name}")
 
     # 2. Known substrate validation
-    print("\n" + "-" * 70)
-    print("2. KNOWN SUBSTRATE VALIDATION")
-    print("-" * 70)
+    logger.info("\n" + "-" * 70)
+    logger.info("2. KNOWN SUBSTRATE VALIDATION")
+    logger.info("-" * 70)
 
     substrate_correct = 0
     substrate_total = 0
@@ -346,15 +349,15 @@ def run_external_validation():
             else:
                 status = "FAIL"
 
-            print(f"  {compound['name']:20s} @ {target}: {pred[target]['prediction']:10s} (prob={prob:.3f}) | {status}")
+            logger.info(f"  {compound['name']:20s} @ {target}: {pred[target]['prediction']:10s} (prob={prob:.3f}) | {status}")
 
     if substrate_total > 0:
-        print(f"\n  SUBSTRATE DETECTION: {substrate_correct}/{substrate_total} = {substrate_correct/substrate_total:.1%}")
+        logger.info(f"\n  SUBSTRATE DETECTION: {substrate_correct}/{substrate_total} = {substrate_correct/substrate_total:.1%}")
 
     # 3. Known blocker validation
-    print("\n" + "-" * 70)
-    print("3. KNOWN BLOCKER VALIDATION (should NOT be substrates)")
-    print("-" * 70)
+    logger.info("\n" + "-" * 70)
+    logger.info("3. KNOWN BLOCKER VALIDATION (should NOT be substrates)")
+    logger.info("-" * 70)
 
     blocker_correct = 0
     blocker_total = 0
@@ -375,24 +378,24 @@ def run_external_validation():
             else:
                 status = "FAIL"
 
-            print(f"  {compound['name']:20s} @ {target}: {prediction:10s} (sub_prob={substrate_prob:.3f}) | {status}")
+            logger.info(f"  {compound['name']:20s} @ {target}: {prediction:10s} (sub_prob={substrate_prob:.3f}) | {status}")
 
     if blocker_total > 0:
-        print(f"\n  BLOCKER DETECTION: {blocker_correct}/{blocker_total} = {blocker_correct/blocker_total:.1%}")
+        logger.info(f"\n  BLOCKER DETECTION: {blocker_correct}/{blocker_total} = {blocker_correct/blocker_total:.1%}")
 
     # Final summary
-    print("\n" + "=" * 70)
-    print("EXTERNAL VALIDATION SUMMARY")
-    print("=" * 70)
-    print(f"  Stereo Sensitivity:  {stereo_accuracy:.1%} ({stereo_correct}/{stereo_total})")
+    logger.info("\n" + "=" * 70)
+    logger.info("EXTERNAL VALIDATION SUMMARY")
+    logger.info("=" * 70)
+    logger.info(f"  Stereo Sensitivity:  {stereo_accuracy:.1%} ({stereo_correct}/{stereo_total})")
     if substrate_total > 0:
-        print(f"  Substrate Detection: {substrate_correct/substrate_total:.1%} ({substrate_correct}/{substrate_total})")
+        logger.info(f"  Substrate Detection: {substrate_correct/substrate_total:.1%} ({substrate_correct}/{substrate_total})")
     if blocker_total > 0:
-        print(f"  Blocker Detection:   {blocker_correct/blocker_total:.1%} ({blocker_correct}/{blocker_total})")
+        logger.info(f"  Blocker Detection:   {blocker_correct/blocker_total:.1%} ({blocker_correct}/{blocker_total})")
 
     passes = stereo_accuracy >= 0.80
-    print(f"\n  OVERALL: {'PASS' if passes else 'FAIL'} (target: >=80% stereo sensitivity)")
-    print("=" * 70)
+    logger.info(f"\n  OVERALL: {'PASS' if passes else 'FAIL'} (target: >=80% stereo sensitivity)")
+    logger.info("=" * 70)
 
     return {
         'stereo_accuracy': stereo_accuracy,
@@ -405,4 +408,5 @@ def run_external_validation():
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
     run_external_validation()

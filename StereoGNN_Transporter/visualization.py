@@ -12,8 +12,11 @@ Generates:
 """
 
 import json
+import logging
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
+
+logger = logging.getLogger(__name__)
 
 import numpy as np
 import pandas as pd
@@ -321,7 +324,7 @@ class EmbeddingVisualizer:
     ):
         """Plot embeddings using UMAP."""
         if not UMAP_AVAILABLE:
-            print("UMAP not available, skipping")
+            logger.warning("UMAP not available, skipping")
             return
 
         label_names = label_names or ['Inactive', 'Blocker', 'Substrate']
@@ -610,7 +613,7 @@ def generate_all_visualizations(
         embed_viz = EmbeddingVisualizer(output_dir / 'embeddings')
         embed_viz.plot_embeddings_tsne(all_embeddings, all_labels['DAT'])
 
-    print(f"Visualizations saved to {output_dir}")
+    logger.info(f"Visualizations saved to {output_dir}")
 
     return metrics_table
 
@@ -647,5 +650,5 @@ if __name__ == "__main__":
     viz.plot_confusion_matrices(predictions, labels)
     df = viz.create_metrics_table(predictions, labels)
 
-    print("Demo visualizations generated")
-    print(df)
+    logger.info("Demo visualizations generated")
+    logger.info(f"\n{df}")
