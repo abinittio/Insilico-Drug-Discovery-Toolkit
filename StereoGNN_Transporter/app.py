@@ -6,12 +6,16 @@ Predicts monoamine transporter activity (DAT, NET, SERT) for drug molecules.
 Distinguishes substrates from blockers with stereochemistry awareness.
 """
 
+import logging
+
 import gradio as gr
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from typing import Dict, List, Optional, Tuple
+
+logger = logging.getLogger(__name__)
 
 from rdkit import Chem
 from rdkit.Chem import Draw, Descriptors, rdMolDescriptors, AllChem
@@ -249,7 +253,7 @@ class TransporterPredictor:
             self.model.eval()
             self.loaded = True
         except Exception as e:
-            print(f"Warning: Could not load model: {e}")
+            logger.warning(f"Could not load model: {e}")
             self.loaded = False
 
         self.class_names = ['inactive', 'blocker', 'substrate']

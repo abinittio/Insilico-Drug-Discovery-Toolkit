@@ -6,6 +6,8 @@ Predicts monoamine transporter activity (DAT, NET, SERT) for drug molecules.
 Outputs continuous 0-1 scores for transport activity.
 """
 
+import logging
+
 import gradio as gr
 import torch
 import torch.nn as nn
@@ -14,6 +16,8 @@ import numpy as np
 import urllib.request
 import json
 from typing import Dict, List, Optional, Tuple
+
+logger = logging.getLogger(__name__)
 
 from rdkit import Chem
 
@@ -270,9 +274,9 @@ class TransporterPredictorOrdinal:
             self.model.load_state_dict(checkpoint['model_state_dict'])
             self.model.eval()
             self.loaded = True
-            print("Loaded ordinal model from outputs/best_model_ordinal.pt")
+            logger.info("Loaded ordinal model from outputs/best_model_ordinal.pt")
         except Exception as e:
-            print(f"Warning: Could not load ordinal model: {e}")
+            logger.warning(f"Could not load ordinal model: {e}")
             self.loaded = False
 
         self.targets = ['DAT', 'NET', 'SERT']

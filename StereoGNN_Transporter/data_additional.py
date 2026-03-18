@@ -5,8 +5,12 @@ Additional Compounds to Reach Target
 We need 500+ compounds. This file adds more to push us over.
 """
 
+import logging
+
 import pandas as pd
 from rdkit import Chem
+
+logger = logging.getLogger(__name__)
 
 # Additional phenethylamines and analogs
 ADDITIONAL_COMPOUNDS = [
@@ -175,10 +179,10 @@ def get_additional_data() -> pd.DataFrame:
             })
 
     df = pd.DataFrame(records)
-    print(f"Additional data: {len(df)} records, {df['smiles'].nunique()} unique compounds")
+    logger.info(f"Additional data: {len(df)} records, {df['smiles'].nunique()} unique compounds")
     return df
 
 
 if __name__ == "__main__":
     df = get_additional_data()
-    print(df.head())
+    logger.info(df.head())
