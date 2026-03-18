@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"C:/Users/nakhi/anaconda3/python.exe\" \"C:/Users/nakhi/StereoGNN_Transporter/predict_transporter.py\")",
+      "Bash(\"C:/Users/nakhi/anaconda3/python.exe\" \"C:/Users/nakhi/StereoGNN_Transporter/app.py\")",
+      "Bash(\"C:/Users/nakhi/anaconda3/python.exe\" -m pip install gradio --quiet)",
+      "Bash(timeout:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
