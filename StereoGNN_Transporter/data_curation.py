@@ -811,22 +811,22 @@ class DataCurationPipeline:
 
 def main():
     """Run data curation pipeline."""
-    print("=" * 60)
-    print("StereoGNN Transporter - Data Curation Pipeline")
-    print("=" * 60)
+    logger.info("=" * 60)
+    logger.info("StereoGNN Transporter - Data Curation Pipeline")
+    logger.info("=" * 60)
 
     pipeline = DataCurationPipeline()
     splits = pipeline.run(use_cache=False)
 
-    print("\n" + "=" * 60)
-    print("Dataset Statistics")
-    print("=" * 60)
+    logger.info("\n" + "=" * 60)
+    logger.info("Dataset Statistics")
+    logger.info("=" * 60)
 
     for split_name, split_df in splits.items():
-        print(f"\n{split_name.upper()}:")
+        logger.info(f"\n{split_name.upper()}:")
         stats = pipeline.get_statistics(split_df)
         for key, value in stats.items():
-            print(f"  {key}: {value}")
+            logger.info(f"  {key}: {value}")
 
 
 if __name__ == "__main__":
