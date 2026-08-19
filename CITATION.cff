@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+title: "In-silico drug discovery toolkit: multi-endpoint ADMET and pharmacology prediction"
+message: "If you use this toolkit or its models, please cite it."
+type: software
+authors:
+  - family-names: Yasini-Ardekani
+    given-names: Nabil
+    orcid: ""
+repository-code: "https://github.com/abinittio/Insilico-Drug-Discovery-Toolkit"
+abstract: >-
+  An integrated in-silico platform for early-stage drug discovery covering
+  monoamine transporter (DAT/NET/SERT) activity classification, abuse liability,
+  hERG cardiotoxicity, CYP450 metabolism and blood-brain barrier permeability,
+  with a SMARTS-based pharmacology rules engine for known failure modes.
+  Reported metrics are scaffold-split and in-dataset unless stated otherwise.
+keywords:
+  - ADMET
+  - drug discovery
+  - cheminformatics
+  - graph neural networks
+  - monoamine transporters
+license: MIT
